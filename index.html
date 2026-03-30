@@ -51,35 +51,31 @@
         .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         .hero h1 { font-family: 'Playfair Display'; font-size: clamp(3.5rem, 16vw, 15rem); line-height: 0.85; text-transform: uppercase; font-style: italic; white-space: nowrap; will-change: transform; }
 
-        /* Marquee */
         .marquee-wrap { border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 30px 0; overflow: hidden; margin: 5vh 0; }
         .marquee { display: flex; animation: scrollMarquee 25s linear infinite; }
         .marquee span { font-size: clamp(2rem, 8vw, 6vw); font-family: 'Playfair Display'; -webkit-text-stroke: 1px #222; color: transparent; padding-right: 80px; white-space: nowrap; }
         @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* Projetos - Efeito P&B */
+        /* Feed de Projetos */
         .work-section { padding: 10vh 0; }
         .work-item { position: relative; margin-bottom: 20vh; width: 100%; cursor: pointer; }
         @media (min-width: 768px) { .work-item { width: 70%; } .work-right { margin-left: auto; } }
         
         .img-wrapper { width: 100%; height: 70vh; overflow: hidden; border-radius: 2px; background: #0a0a0a; position: relative; }
         
-        /* LOGICA P&B PARA CORES */
+        /* Efeito P&B Revelação */
         .img-wrapper img, .project-grid img, .project-header img { 
             width: 100%; height: 100%; object-fit: cover; 
-            transform: scale(1.05);
-            filter: grayscale(100%) brightness(0.8); /* Começa P&B */
-            transition: filter 1s var(--ease), transform 1.2s var(--ease); 
+            filter: grayscale(100%) brightness(0.7); 
+            transition: filter 0.8s var(--ease), transform 1.2s var(--ease); 
         }
         
         .work-item:hover img, .work-item:active img,
         .project-grid img:hover, .project-grid img:active,
         .project-header:hover img { 
-            filter: grayscale(0%) brightness(1); /* Revela cor */
-            transform: scale(1);
+            filter: grayscale(0%) brightness(1); 
         }
 
-        /* Indicador Mobile para revelar cor */
         .color-badge {
             position: absolute; top: 20px; left: 20px; z-index: 10;
             padding: 6px 12px; background: rgba(255,255,255,0.1);
@@ -87,31 +83,38 @@
             color: #fff; font-size: 8px; letter-spacing: 2px; border-radius: 2px;
             pointer-events: none; transition: 0.3s;
         }
-        .work-item:hover .color-badge, .work-item:active .color-badge { background: #fff; color: #000; border-color: #fff; }
-        .work-item:hover .color-badge::after, .work-item:active .color-badge::after { content: " REAIS"; }
+        .work-item:hover .color-badge, .work-item:active .color-badge { background: #fff; color: #000; }
 
         .work-item h3 {
             position: absolute; bottom: -25px; left: 5%;
             font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 5rem); 
-            font-style: italic; z-index: 10; text-shadow: 10px 10px 30px rgba(0,0,0,0.5); pointer-events: none;
+            font-style: italic; z-index: 10; text-shadow: 10px 10px 30px rgba(0,0,0,0.5);
         }
 
         .cta-button {
             background: #fff; color: #000; padding: 18px 40px; border-radius: 100px;
             text-decoration: none; font-weight: 900; font-size: 0.7rem; letter-spacing: 3px;
             text-transform: uppercase; transition: 0.3s var(--ease); display: inline-block; border: 1px solid transparent;
-            cursor: pointer;
         }
 
-        /* OVERLAY DO PROJETO */
+        /* OVERLAY DO PROJETO - CORREÇÃO DE TAMANHO */
         #project-view {
             position: fixed; inset: 0; background: #000; z-index: 3000;
             display: none; overflow-y: auto; -webkit-overflow-scrolling: touch; 
         }
-        .project-header { height: 70vh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .project-header h2 { position: relative; z-index: 2; font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 6rem); font-style: italic; text-align: center; padding: 0 30px; }
-        .project-grid { padding: 30px 5vw; display: flex; flex-direction: column; gap: 25px; }
-        .project-grid img { width: 100%; height: auto; border-radius: 2px; cursor: pointer; }
+
+        .project-header { height: 60vh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .project-header h2 { position: relative; z-index: 2; font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 6rem); font-style: italic; text-align: center; padding: 0 30px; pointer-events: none; }
+
+        .project-grid { 
+            padding: 60px 12vw; /* Mais respiro lateral */
+            display: flex; flex-direction: column; align-items: center; gap: 60px; 
+        }
+        .project-grid img { 
+            width: auto; max-width: 100%; 
+            max-height: 85vh; /* Impede que a foto vertical domine a tela toda */
+            object-fit: contain; border-radius: 2px; 
+        }
 
         .close-btn { 
             position: fixed; top: 25px; right: 25px; width: 50px; height: 50px; 
@@ -124,7 +127,7 @@
         #admin-panel { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; padding: 10vh 5vw; overflow-y: auto; }
         .admin-box { max-width: 600px; margin: 0 auto; background: #0a0a0a; padding: 40px; border: 1px solid #111; }
         .admin-box input { width: 100%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #222; color: #fff; }
-        
+
         footer { padding: 80px 0; text-align: center; }
         .foot-link { color: #333; text-decoration: none; font-size: 0.6rem; letter-spacing: 5px; display: block; margin-bottom: 15px; }
         .copyright { color: #111; font-size: 0.5rem; letter-spacing: 3px; cursor: pointer; }
@@ -146,12 +149,11 @@
         <div id="upload-form">
             <input type="text" id="proj-title" placeholder="Nome do Projeto">
             <input type="file" id="proj-files" multiple accept="image/*">
-            <button onclick="handleUpload()" class="cta-button" id="upload-btn" style="width: 100%;">Publicar Nova Obra</button>
+            <button onclick="handleUpload()" class="cta-button" id="upload-btn" style="width: 100%;">Publicar</button>
         </div>
         <div id="edit-photos-container" style="display:none; margin-top:20px; border-top:1px solid #222; padding-top:20px;">
-            <h4 id="editing-name" style="font-size: 12px; color: #666;">Editando Fotos...</h4>
-            <div id="edit-grid-content" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin-top:15px;"></div>
-            <button onclick="closePhotoEditor()" class="cta-button" style="width: 100%; margin-top:20px; font-size:10px;">Voltar</button>
+            <div id="edit-grid-content" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;"></div>
+            <button onclick="closePhotoEditor()" class="cta-button" style="width: 100%; margin-top:20px;">Voltar</button>
         </div>
         <div id="manage-list" style="margin-top:40px;"></div>
     </div>
@@ -163,10 +165,10 @@
     <div class="project-header">
         <img id="view-cover" src="" alt="">
         <h2 id="view-title"></h2>
-        <div style="position: absolute; bottom: 30px; font-size: 8px; letter-spacing: 4px; opacity: 0.5;">TOQUE NAS FOTOS PARA REVELAR CORES ↓</div>
+        <div style="position: absolute; bottom: 30px; font-size: 8px; letter-spacing: 4px; opacity: 0.5; text-align: center; width: 100%;">TOQUE PARA REVELAR CORES ↓</div>
     </div>
     <div class="project-grid" id="view-grid"></div>
-    <div style="text-align: center; padding: 80px 0;"><button onclick="closeProject()" class="cta-button">Fechar Galeria</button></div>
+    <div style="text-align: center; padding: 80px 0;"><button onclick="closeProject()" class="cta-button">Fechar</button></div>
 </div>
 
 <header>
@@ -186,26 +188,26 @@
             <p style="max-width: 350px; color: #444; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 3px; line-height: 2;">
                 Direção visual estratégica. Cinema e arte integrados em identidades de alto impacto.
             </p>
-            <a href="#trabalhos" class="cta-button magnetic-target">Explorar Projetos</a>
+            <a href="#trabalhos" class="cta-button magnetic-target">Portfólio</a>
         </div>
     </section>
 
     <div class="marquee-wrap">
         <div class="marquee">
-            <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span><span>PRODUÇÃO</span>
-            <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span><span>PRODUÇÃO</span>
+            <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span>
+            <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span>
         </div>
     </div>
 
     <section id="trabalhos" class="container work-section">
         <div id="feed-projetos">
-            <p style="text-align: center; letter-spacing: 5px; color: #111;">SINCRONIZANDO ACERVO...</p>
+            <p style="text-align: center; letter-spacing: 5px; color: #111;">CARREGANDO...</p>
         </div>
     </section>
 </main>
 
 <footer>
-    <a href="https://www.instagram.com/blproducoe.s?igsh=OG56eXAxbnVub3Bh" target="_blank" class="foot-link magnetic-target">INSTAGRAM // @BLPRODUCOE.S_</a>
+    <a href="https://www.instagram.com/blproducoe.s" target="_blank" class="foot-link magnetic-target">INSTAGRAM // @BLPRODUCOE.S</a>
     <span class="copyright" onclick="openAdminPortal()">BLPRODUÇÕES &copy; 2026 // ACESSO PRIVADO</span>
 </footer>
 
@@ -237,7 +239,7 @@
         try {
             const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
-            feed.innerHTML = ''; manage.innerHTML = '<h4 style="font-size:10px; color:#444;">GESTÃO</h4>'; allProjects = [];
+            feed.innerHTML = ''; manage.innerHTML = ''; allProjects = [];
             snapshot.forEach((docSnap, index) => {
                 const data = docSnap.data(); data.id = docSnap.id;
                 allProjects.push(data);
@@ -245,13 +247,12 @@
                 item.className = `work-item ${index % 2 !== 0 ? 'work-right' : ''}`;
                 item.innerHTML = `
                     <div class="img-wrapper" onclick="viewProject('${data.id}')">
-                        <div class="color-badge">FILTRO: CORES</div>
+                        <div class="color-badge">P&B : TOQUE P/ COR</div>
                         <img src="${data.images[0]}">
                     </div>
                     <h3>${data.title}</h3>
                 `;
                 feed.appendChild(item);
-
                 const mItem = document.createElement('div');
                 mItem.style.cssText = "display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #111;";
                 mItem.innerHTML = `<span>${data.title}</span><div>
