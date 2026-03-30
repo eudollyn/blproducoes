@@ -15,9 +15,8 @@
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
+        /* Reset e Base */
         html.lenis, html.lenis body { height: auto; }
-        .lenis.lenis-smooth { scroll-behavior: auto !important; }
-        
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { background: var(--bg); color: var(--fg); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
@@ -27,16 +26,11 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
+        /* Cursor */
         @media (hover: hover) {
             * { cursor: none !important; }
-            #cursor {
-                position: fixed; width: 8px; height: 8px; background: #fff;
-                border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: difference;
-            }
-            #cursor-follower {
-                position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3);
-                border-radius: 50%; pointer-events: none; z-index: 9998; transition: transform 0.1s linear;
-            }
+            #cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+            #cursor-follower { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 9998; transition: transform 0.1s linear; }
         }
 
         #preloader {
@@ -53,6 +47,7 @@
         .logo-circle { width: 60px; height: 60px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; }
         .logo-circle img { width: 70%; height: 70%; object-fit: contain; }
 
+        /* Hero */
         .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         .hero h1 { font-family: 'Playfair Display'; font-size: clamp(3rem, 16vw, 15rem); line-height: 0.85; text-transform: uppercase; font-style: italic; white-space: nowrap; }
 
@@ -65,10 +60,9 @@
         .work-item img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); transition: 1.5s var(--ease); filter: grayscale(0.6); }
         .work-item:hover img { transform: scale(1); filter: grayscale(0); }
         
-        /* Badge para induzir o clique */
         .click-hint {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: #fff; color: #000; padding: 10px 20px; border-radius: 50px;
+            background: #fff; color: #000; padding: 12px 25px; border-radius: 50px;
             font-size: 0.6rem; font-weight: 900; letter-spacing: 2px; opacity: 0; transition: 0.5s var(--ease);
         }
         .work-item:hover .click-hint { opacity: 1; }
@@ -85,45 +79,46 @@
             text-transform: uppercase; transition: 0.4s var(--ease); display: inline-block; border: 1px solid transparent;
         }
 
-        /* Overlay do Projeto */
+        /* OVERLAY DO PROJETO (CORREÇÃO DE TOUCH) */
         #project-view {
-            position: fixed; inset: 0; background: #000; z-index: 2000;
-            display: none; padding: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            position: fixed; inset: 0; background: #000; z-index: 3000;
+            display: none; overflow-y: scroll; /* Força scroll nativo */
+            -webkit-overflow-scrolling: touch; 
         }
-        
-        /* Indicador de Scroll dentro do album */
+
+        /* Cabeçalho do Álbum Ajustado */
+        .project-header { 
+            height: 75vh; /* Reduzido para mostrar a próxima foto abaixo */
+            width: 100%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; 
+        }
+        .project-header img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
+        .project-header h2 { position: relative; z-index: 2; font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 6rem); font-style: italic; text-align: center; padding: 0 20px; }
+
         .scroll-indicator {
-            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             text-align: center; color: #fff; font-size: 10px; letter-spacing: 5px;
-            animation: bounce 2s infinite; z-index: 10; pointer-events: none;
+            animation: bounce 2s infinite; z-index: 10;
         }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translate(-50%, 0);} 40% {transform: translate(-50%, -10px);} 60% {transform: translate(-50%, -5px);} }
 
-        .project-header { height: 100vh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .project-header img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
-        .project-header h2 { position: relative; z-index: 2; font-family: 'Playfair Display'; font-size: clamp(3rem, 10vw, 8rem); font-style: italic; text-align: center; }
-
-        .project-grid { padding: 5vh 5vw; display: grid; grid-template-columns: 1fr; gap: 40px; }
-        @media (min-width: 768px) { .project-grid { grid-template-columns: 1fr 1fr; } }
-        .project-grid img { width: 100%; border-radius: 4px; }
+        .project-grid { padding: 40px 5vw; display: flex; flex-direction: column; gap: 30px; }
+        .project-grid img { width: 100%; height: auto; border-radius: 2px; }
 
         .close-btn { 
-            position: fixed; top: 30px; right: 30px; width: 50px; height: 50px; 
+            position: fixed; top: 25px; right: 25px; width: 45px; height: 45px; 
             background: #fff; color: #000; border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; font-size: 1.5rem; 
-            z-index: 2100; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            align-items: center; justify-content: center; font-size: 1.2rem; 
+            z-index: 4000; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
         /* Admin */
-        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 3000; display: none; padding: 10vh 5vw; overflow-y: auto; }
+        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; padding: 10vh 5vw; overflow-y: auto; }
         .admin-box { max-width: 600px; margin: 0 auto; background: #0a0a0a; padding: 40px; border: 1px solid #111; }
         .admin-box input { width: 100%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #222; color: #fff; }
-        .manage-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #111; font-size: 12px; }
 
         footer { padding: 100px 0; text-align: center; }
         .foot-link { color: #333; text-decoration: none; font-size: 0.6rem; letter-spacing: 5px; display: block; margin-bottom: 15px; }
         .copyright { color: #111; font-size: 0.5rem; letter-spacing: 3px; cursor: pointer; }
-
     </style>
 </head>
 
@@ -135,7 +130,7 @@
 <div id="cursor-follower"></div>
 
 <!-- Modal Administrador -->
-<div id="admin-panel">
+<div id="admin-panel" data-lenis-prevent>
     <span class="close-btn" onclick="closeAdmin()">&times;</span>
     <div class="admin-box">
         <h2 style="font-family: 'Playfair Display'; margin-bottom: 30px;">Moderador</h2>
@@ -146,24 +141,22 @@
     </div>
 </div>
 
-<!-- Visualização de Projeto (Corrigida) -->
-<div id="project-view">
+<!-- Visualização de Projeto (Corrigida com data-lenis-prevent) -->
+<div id="project-view" data-lenis-prevent>
     <span class="close-btn" onclick="closeProject()">&times;</span>
     
     <div class="project-header">
         <img id="view-cover" src="" alt="">
         <h2 id="view-title"></h2>
         <div class="scroll-indicator">
-            <p>DESCER</p>
+            <p>ROLANDO PARA BAIXO</p>
             <p>↓</p>
         </div>
     </div>
 
-    <div class="project-grid" id="view-grid">
-        <!-- Outras fotos entram aqui -->
-    </div>
+    <div class="project-grid" id="view-grid"></div>
 
-    <div style="text-align: center; padding: 100px 0;">
+    <div style="text-align: center; padding-bottom: 100px;">
         <button onclick="closeProject()" class="cta-button">Fechar Galeria</button>
     </div>
 </div>
@@ -230,7 +223,7 @@
             const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
             feed.innerHTML = '';
-            manage.innerHTML = '<h4 style="margin-bottom:15px;">Gerenciar</h4>';
+            manage.innerHTML = '';
             allProjects = [];
 
             snapshot.forEach((docSnap, index) => {
@@ -250,8 +243,7 @@
                 feed.appendChild(item);
 
                 const mItem = document.createElement('div');
-                mItem.className = 'manage-item';
-                mItem.innerHTML = `<span>${data.title}</span><button onclick="deleteProject('${data.id}')" style="color:red; background:none; border:none; cursor:pointer;">EXCLUIR</button>`;
+                mItem.innerHTML = `<div style="display:flex; justify:space-between; margin:10px 0; font-size:12px;"><span>${data.title}</span><button onclick="deleteProject('${data.id}')" style="color:red; background:none; border:none; margin-left:10px;">EXCLUIR</button></div>`;
                 manage.appendChild(mItem);
             });
         } catch (e) { console.error(e); }
@@ -261,8 +253,8 @@
         const title = document.getElementById('proj-title').value;
         const files = document.getElementById('proj-files').files;
         if (!title || files.length === 0) return alert("Título e fotos são obrigatórios.");
-        document.getElementById('upload-btn').innerText = "COMPRIMINDO...";
         
+        document.getElementById('upload-btn').innerText = "PUBLICANDO...";
         const compressedImages = [];
         for (let file of files) {
             const img = await compressImage(file);
@@ -305,7 +297,6 @@
         document.getElementById('view-cover').src = p.images[0];
         grid.innerHTML = '';
         
-        // Começa da segunda imagem na grid
         p.images.slice(1).forEach(src => {
             const img = document.createElement('img');
             img.src = src;
@@ -314,13 +305,15 @@
 
         const view = document.getElementById('project-view');
         view.style.display = 'block';
-        view.scrollTop = 0; // Volta pro topo ao abrir
-        lenis.stop(); // Para o scroll do fundo
+        view.scrollTop = 0;
+        lenis.stop(); // Para o scroll de fundo mas permite o interno via data-lenis-prevent
+        document.body.style.overflow = 'hidden';
     };
 
     window.closeProject = () => {
         document.getElementById('project-view').style.display = 'none';
-        lenis.start(); // Volta o scroll do fundo
+        lenis.start();
+        document.body.style.overflow = '';
     };
 
     window.addEventListener('load', loadContent);
@@ -344,13 +337,6 @@
             follower.style.transform = `translate3d(${e.clientX - 20}px, ${e.clientY - 20}px, 0)`;
         });
     }
-
-    window.addEventListener('scroll', () => {
-        const s = window.pageYOffset;
-        document.querySelectorAll('.parallax-text').forEach(el => {
-            el.style.transform = `translateX(${s * el.dataset.speed * 0.1}px)`;
-        });
-    });
 </script>
 
 </body>
