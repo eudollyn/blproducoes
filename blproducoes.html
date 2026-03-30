@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BLPRODUÇÕES | Direção Visual de Elite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;900&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #000;
+            --fg: #fff;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Reset Geral */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        @media (hover: hover) {
+            * { cursor: none; }
+            #cursor {
+                position: fixed; width: 10px; height: 10px; background: #fff;
+                border-radius: 50%; pointer-events: none; z-index: 9999;
+                mix-blend-mode: difference;
+            }
+            #cursor-follower {
+                position: fixed; width: 30px; height: 30px; border: 1px solid rgba(255,255,255,0.2);
+                border-radius: 50%; pointer-events: none; z-index: 9998;
+                transition: transform 0.15s var(--ease);
+            }
+        }
+
+        body { 
+            background: var(--bg); color: var(--fg); 
+            font-family: 'Inter', sans-serif; overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 10000; display: flex; align-items: center;
+            justify-content: center; transition: 1s var(--ease);
+        }
+        #preloader span {
+            font-family: 'Playfair Display'; font-size: clamp(1rem, 5vw, 1.5rem); 
+            letter-spacing: 10px; animation: pulse 2s infinite; font-weight: 900;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9997; opacity: 0.05; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        .container { max-width: 1600px; margin: 0 auto; padding: 0 5vw; }
+
+        header {
+            position: fixed; top: 0; width: 100%; padding: 20px 0; z-index: 1000;
+            mix-blend-mode: difference;
+        }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo-circle { 
+            width: clamp(50px, 10vw, 75px); height: clamp(50px, 10vw, 75px); 
+            border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; 
+        }
+        .logo-circle img { width: 75%; height: 75%; object-fit: contain; }
+
+        .hero {
+            height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            padding-top: 60px;
+        }
+        .hero h1 {
+            font-family: 'Playfair Display'; 
+            font-size: clamp(3.5rem, 18vw, 18rem);
+            line-height: 0.8; text-transform: uppercase; font-style: italic;
+            white-space: nowrap;
+        }
+
+        .work-section { padding: 10vh 0; min-height: 50vh; }
+        .work-item {
+            position: relative; margin-bottom: 15vh;
+            filter: grayscale(1); transition: 1s var(--ease);
+            width: 100%; cursor: pointer;
+        }
+        @media (min-width: 768px) {
+            .work-item { width: 80%; }
+            .work-right { margin-left: auto; }
+        }
+
+        .work-item:hover { filter: grayscale(0); }
+        .img-container { width: 100%; height: 60vh; overflow: hidden; border-radius: 2px; background: #111; }
+        @media (min-width: 768px) { .img-container { height: 80vh; } }
+
+        .work-item img {
+            width: 100%; height: 100%; object-fit: cover;
+            transform: scale(1.1); transition: 1.5s var(--ease);
+        }
+        .work-item:hover img { transform: scale(1); }
+
+        .work-item h3 {
+            position: absolute; bottom: -20px; left: 10px;
+            font-size: clamp(2.5rem, 10vw, 7vw); 
+            font-family: 'Playfair Display'; font-style: italic;
+            z-index: 10; text-shadow: 2px 2px 15px rgba(0,0,0,0.8);
+        }
+
+        .cta-button {
+            background: #fff; color: #000; padding: clamp(15px, 3vw, 25px) clamp(30px, 6vw, 50px); 
+            border-radius: 100px; text-decoration: none; font-weight: 900; 
+            font-size: clamp(0.6rem, 2vw, 0.75rem); letter-spacing: 3px; 
+            text-transform: uppercase; transition: 0.3s var(--ease);
+            display: inline-block; border: none;
+        }
+        .cta-button:hover { background: #000; color: #fff; transform: scale(1.05); border: 1px solid #fff; }
+
+        .marquee-wrap { border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 30px 0; overflow: hidden; }
+        .marquee { display: flex; animation: scrollMarquee 20s linear infinite; }
+        .marquee span { 
+            font-size: clamp(3rem, 10vw, 8vw); font-family: 'Playfair Display'; 
+            -webkit-text-stroke: 1px #333; color: transparent; padding-right: 50px;
+        }
+        @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* FOOTER ESTILIZADO */
+        footer { padding: 80px 0; text-align: center; color: #222; letter-spacing: 5px; font-size: 0.6rem; }
+        .footer-link { 
+            color: #555; text-decoration: none; margin-bottom: 20px; display: inline-block; 
+            transition: color 0.3s var(--ease); font-weight: 400;
+        }
+        .footer-link:hover { color: #fff; }
+        .copyright-text { cursor: pointer; display: block; transition: color 0.3s; }
+        .copyright-text:hover { color: #444; }
+
+        /* PAINEL MODERADOR */
+        #admin-panel {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .admin-content { background: #111; padding: 40px; border-radius: 10px; width: 100%; max-width: 500px; border: 1px solid #333; }
+        .admin-content h2 { margin-bottom: 20px; font-family: 'Playfair Display'; }
+        .admin-content input { width: 100%; padding: 15px; margin-bottom: 15px; background: #000; border: 1px solid #333; color: #fff; }
+
+        /* VIEW DO PROJETO */
+        #project-view {
+            position: fixed; inset: 0; background: #000; z-index: 1500;
+            display: none; overflow-y: auto; padding: 100px 5vw;
+        }
+        .close-view { position: fixed; top: 40px; right: 40px; font-size: 30px; color: #fff; cursor: pointer; z-index: 1600; }
+        .project-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (min-width: 768px) { .project-grid { grid-template-columns: 1fr 1fr; } }
+        .project-grid img { width: 100%; height: auto; border-radius: 4px; }
+
+        @media (max-width: 768px) {
+            .hero-footer { flex-direction: column; align-items: flex-start !important; gap: 30px; }
+            .hero h1 { margin-left: 0 !important; }
+            #cursor, #cursor-follower { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="preloader"><span>BLPRODUÇÕES</span></div>
+<div class="noise"></div>
+
+<div id="cursor"></div>
+<div id="cursor-follower"></div>
+
+<!-- Modal Moderador -->
+<div id="admin-panel">
+    <div class="admin-content">
+        <h2>Novo Projeto</h2>
+        <input type="text" id="proj-title" placeholder="Título do Projeto">
+        <p style="font-size: 10px; color: #666; margin-bottom: 5px;">Selecione várias fotos (a primeira será a capa)</p>
+        <input type="file" id="proj-files" multiple accept="image/*">
+        <button onclick="uploadProject()" class="cta-button" id="upload-btn">Salvar Trabalho</button>
+        <button onclick="closeAdmin()" style="background:none; color: #555; border:none; margin-top: 15px; cursor:pointer;">Cancelar</button>
+    </div>
+</div>
+
+<!-- Visualização de Projeto -->
+<div id="project-view">
+    <span class="close-view" onclick="closeProject()">&times;</span>
+    <h2 id="view-title" style="font-family: 'Playfair Display'; font-size: 3rem; margin-bottom: 50px; font-style: italic;"></h2>
+    <div class="project-grid" id="view-grid"></div>
+</div>
+
+<header>
+    <div class="container nav-content">
+        <div class="logo-wrap magnetic-target">
+            <div class="logo-circle">
+                <img src="logo.png" alt="BL">
+            </div>
+        </div>
+        <a href="https://wa.me/5531985534292" class="cta-button magnetic-target">Reservar</a>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero">
+        <h1 class="parallax-text" data-speed="-1">Além</h1>
+        <h1 class="parallax-text" data-speed="1" style="margin-left: 10vw;">Da Lente</h1>
+        
+        <div class="hero-footer" style="margin-top: 8vh; display: flex; justify-content: space-between; align-items: flex-end;">
+            <p style="max-width: 300px; color: #555; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 2px; line-height: 1.8;">
+                Direção visual estratégica. Cinema e arte integrados em identidades de alto impacto.
+            </p>
+            <a href="#trabalhos" class="cta-button magnetic-target">Ver Projetos</a>
+        </div>
+    </section>
+
+    <div class="marquee-wrap">
+        <div class="marquee">
+            <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span>
+            <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span>
+        </div>
+    </div>
+
+    <section id="trabalhos" class="work-section">
+        <p id="loading-msg" style="text-align: center; color: #333; letter-spacing: 2px;">CARREGANDO PORTFÓLIO...</p>
+    </section>
+
+    <section style="padding: 100px 0; text-align: center;">
+        <h2 style="font-family: Playfair Display; font-size: clamp(2.5rem, 8vw, 6vw); font-style: italic; margin-bottom: 40px;">Sua visão, nossa lente.</h2>
+        <a href="https://wa.me/5531985534292" class="cta-button magnetic-target" style="padding: 30px 60px; font-size: 1rem;">Iniciar Narrativa</a>
+    </section>
+</main>
+
+<footer>
+    <a href="https://www.instagram.com/blproducoe.s?igsh=OG56eXAxbnVub3Bh" target="_blank" class="footer-link magnetic-target">INSTAGRAM</a>
+    <span class="copyright-text" onclick="checkAdmin()">BLPRODUÇÕES // 2026</span>
+</footer>
+
+<!-- FIREBASE SDKS -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAf_6A_0Qff3Jvx0oBkWGCH_5sWQgqsl5w",
+        authDomain: "bl-portfolio-90f61.firebaseapp.com",
+        projectId: "bl-portfolio-90f61",
+        storageBucket: "bl-portfolio-90f61.firebasestorage.app",
+        messagingSenderId: "35035346215",
+        appId: "1:35035346215:web:28f36b81f5197996d9a502",
+        measurementId: "G-P3FQQSMTC7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let allProjects = [];
+
+    async function loadProjects() {
+        const container = document.getElementById('trabalhos');
+        try {
+            const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            
+            if(querySnapshot.empty) {
+                container.innerHTML = '<p style="text-align:center; color:#333;">Nenhum projeto publicado ainda.</p>';
+                return;
+            }
+
+            allProjects = [];
+            container.innerHTML = '';
+            
+            let index = 0;
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                data.id = doc.id;
+                allProjects.push(data);
+
+                const item = document.createElement('div');
+                item.className = `work-item ${index % 2 !== 0 ? 'work-right' : ''}`;
+                item.onclick = () => openProject(data.id);
+                
+                item.innerHTML = `
+                    <div class="img-container">
+                        <img src="${data.images[0]}" alt="${data.title}">
+                    </div>
+                    <h3>${data.title}</h3>
+                `;
+                container.appendChild(item);
+                index++;
+            });
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<p>Erro ao carregar projetos.</p>';
+        }
+    }
+
+    window.uploadProject = async () => {
+        const title = document.getElementById('proj-title').value;
+        const files = document.getElementById('proj-files').files;
+        const btn = document.getElementById('upload-btn');
+
+        if(!title || files.length === 0) return alert("Preencha o título e escolha fotos");
+
+        btn.innerText = "PROCESSANDO...";
+        btn.disabled = true;
+
+        try {
+            const base64Images = [];
+            for (let file of files) {
+                const b64 = await convertBase64(file);
+                base64Images.push(b64);
+            }
+
+            await addDoc(collection(db, "projects"), {
+                title: title,
+                images: base64Images,
+                createdAt: new Date()
+            });
+
+            alert("Projeto publicado com sucesso!");
+            location.reload();
+        } catch (e) {
+            alert("Erro ao subir projeto. Verifique o tamanho das fotos.");
+            btn.innerText = "Salvar Trabalho";
+            btn.disabled = false;
+        }
+    };
+
+    function convertBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    window.openProject = (id) => {
+        const project = allProjects.find(p => p.id === id);
+        if(!project) return;
+        document.getElementById('view-title').innerText = project.title;
+        const grid = document.getElementById('view-grid');
+        grid.innerHTML = '';
+        project.images.forEach(imgSrc => {
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            grid.appendChild(img);
+        });
+        document.getElementById('project-view').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeProject = () => {
+        document.getElementById('project-view').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    };
+
+    window.addEventListener('load', loadProjects);
+</script>
+
+<script>
+    function checkAdmin() {
+        const pass = prompt("Acesso Restrito. Digite a senha:");
+        if(pass === "bl2026") { 
+            document.getElementById('admin-panel').style.display = 'flex';
+        }
+    }
+
+    function closeAdmin() {
+        document.getElementById('admin-panel').style.display = 'none';
+    }
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const preloader = document.getElementById('preloader');
+            if(preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => preloader.remove(), 1000);
+            }
+        }, 1000);
+    });
+
+    if (window.matchMedia("(hover: hover)").matches) {
+        const cursor = document.getElementById('cursor');
+        const follower = document.getElementById('cursor-follower');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate3d(${e.clientX - 5}px, ${e.clientY - 5}px, 0)`;
+            follower.style.transform = `translate3d(${e.clientX - 15}px, ${e.clientY - 15}px, 0)`;
+            document.querySelectorAll('.magnetic-target').forEach(target => {
+                const rect = target.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+                if (dist < 100) {
+                    target.style.transform = `translate3d(${(e.clientX - centerX) * 0.3}px, ${(e.clientY - centerY) * 0.3}px, 0)`;
+                } else {
+                    target.style.transform = `translate3d(0, 0, 0)`;
+                }
+            });
+        });
+    }
+
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const isMobile = window.innerWidth < 768;
+        document.querySelectorAll('.parallax-text').forEach(text => {
+            const speed = text.getAttribute('data-speed');
+            const factor = isMobile ? 0.05 : 0.15; 
+            text.style.transform = `translateX(${scrolled * speed * factor}px)`;
+        });
+    });
+</script>
+
+</body>
+</html>
