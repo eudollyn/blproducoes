@@ -48,15 +48,14 @@
         .logo-circle { width: 55px; height: 55px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
         .logo-circle img { width: 70%; height: 70%; object-fit: contain; }
 
-        /* HERO - AJUSTE MOBILE */
-        .hero { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; padding-top: 80px; }
-        .hero h1 { font-family: 'Playfair Display'; font-size: clamp(3.5rem, 16vw, 15rem); line-height: 0.85; text-transform: uppercase; font-style: italic; white-space: nowrap; will-change: transform; }
+        /* HERO - TEXTO SEPARADO */
+        .hero { min-height: 85vh; display: flex; flex-direction: column; justify-content: center; padding-top: 60px; }
+        .hero h1 { font-family: 'Playfair Display'; font-size: clamp(4rem, 18vw, 15rem); line-height: 0.8; text-transform: uppercase; font-style: italic; white-space: nowrap; will-change: transform; }
 
         @media (max-width: 768px) {
-            .hero { min-height: 50vh; padding-top: 100px; justify-content: flex-start; }
-            .hero h1 { white-space: normal; line-height: 1; margin-bottom: 20px; }
-            .hero-footer { margin-top: 10px !important; }
-            .work-section { padding: 5vh 0 !important; }
+            .hero { min-height: 60vh; padding-top: 100px; justify-content: flex-start; }
+            .hero h1 { font-size: clamp(5.5rem, 24vw, 12rem); line-height: 0.85; margin-bottom: -5px; }
+            .hero-footer { margin-top: 40px !important; }
         }
 
         /* MARQUEE */
@@ -65,20 +64,16 @@
         .marquee span { font-size: clamp(1.2rem, 5vw, 4vw); font-family: 'Playfair Display'; padding-right: 40px; white-space: nowrap; text-transform: uppercase; letter-spacing: 2px; }
         .m-solid { color: #fff; font-weight: 400; font-style: italic; }
         .m-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.3); color: transparent; font-weight: 900; }
-        
         @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* Feed Projetos */
         .work-section { padding: 10vh 0; }
         .work-item { position: relative; margin-bottom: 15vh; width: 100%; cursor: pointer; }
         @media (min-width: 768px) { .work-item { width: 70%; } .work-right { margin-left: auto; } }
-        
         .img-wrapper { width: 100%; height: 70vh; overflow: hidden; border-radius: 2px; background: #0a0a0a; position: relative; }
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) brightness(0.7); transition: 0.8s var(--ease); }
         .work-item:hover img, .work-item:active img { filter: grayscale(0%) brightness(1); }
-
         .click-hint { position: absolute; bottom: 20px; right: 20px; background: #fff; color: #000; padding: 8px 15px; border-radius: 50px; font-size: 9px; font-weight: 900; letter-spacing: 2px; z-index: 5; }
-
         .work-item h3 { position: absolute; bottom: -25px; left: 5%; font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 4rem); font-style: italic; z-index: 10; text-shadow: 10px 10px 30px rgba(0,0,0,0.5); }
 
         /* Slider Álbum */
@@ -115,24 +110,19 @@
 <div id="cursor"></div>
 <div id="cursor-follower"></div>
 
-<!-- Modal Administrador -->
 <div id="admin-panel" data-lenis-prevent>
     <span class="close-btn" onclick="closeAdmin()">&times;</span>
     <div class="admin-box">
         <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px; font-size: 1.5rem;">Moderador</h2>
-        
         <div id="upload-form">
             <input type="text" id="proj-title" placeholder="Nome do Projeto">
             <input type="file" id="proj-files" multiple accept="image/*">
             <button onclick="handleUpload()" style="width: 100%;" class="cta-button">Publicar</button>
         </div>
-
-        <!-- Painel de edição de fotos individuais -->
         <div id="edit-photos-container" style="display:none; margin-top:20px; border-top:1px solid #222; padding-top:20px;">
             <div id="edit-grid-content" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;"></div>
-            <button onclick="closePhotoEditor()" style="width: 100%; margin-top:15px;" class="cta-button">Voltar</button>
+            <button onclick="window.closePhotoEditor()" style="width: 100%; margin-top:15px;" class="cta-button">Voltar</button>
         </div>
-
         <div id="manage-list" style="margin-top:30px;"></div>
     </div>
 </div>
@@ -160,8 +150,11 @@
 
 <main>
     <section class="container hero">
-        <h1 class="parallax-text" data-speed="-2">Além</h1>
-        <h1 class="parallax-text" data-speed="2" style="margin-left: 10vw;">Da Lente</h1>
+        <!-- TÍTULO SEPARADO PARA PARALLAX -->
+        <h1 class="parallax-text" data-speed="-2.5">Além</h1>
+        <h1 class="parallax-text" data-speed="1.8" style="margin-left: 15vw;">Da</h1>
+        <h1 class="parallax-text" data-speed="-1.2" style="margin-left: 30vw;">Lente</h1>
+        
         <div class="hero-footer" style="margin-top: 5vh; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
             <p style="max-width: 300px; color: #444; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; line-height: 1.8;">
                 Direção visual estratégica. Cinema e arte integrados em identidades de alto impacto.
@@ -182,7 +175,7 @@
 
     <section id="trabalhos" class="container work-section">
         <div id="feed-projetos">
-            <p style="text-align: center; letter-spacing: 5px; color: #111;">CARREGANDO...</p>
+            <p style="text-align: center; letter-spacing: 5px; color: #111;">SINCRONIZANDO...</p>
         </div>
     </section>
 </main>
@@ -260,7 +253,7 @@
     };
 
     window.removeSingleImage = async (id, idx) => {
-        if(!confirm("Remover esta imagem?")) return;
+        if(!confirm("Remover imagem?")) return;
         const proj = allProjects.find(p => p.id === id);
         const newImgs = [...proj.images]; newImgs.splice(idx, 1);
         await updateDoc(doc(db, "projects", id), { images: newImgs });
@@ -281,7 +274,7 @@
         location.reload();
     };
 
-    window.deleteWholeProject = async (id) => { if (confirm("Apagar projeto?")) { await deleteDoc(doc(db, "projects", id)); loadContent(); } };
+    window.deleteWholeProject = async (id) => { if (confirm("Apagar?")) { await deleteDoc(doc(db, "projects", id)); loadContent(); } };
 
     const grid = document.getElementById('view-grid');
     grid.addEventListener('scroll', () => {
