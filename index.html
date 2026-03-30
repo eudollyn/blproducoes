@@ -54,83 +54,90 @@
         .marquee-wrap { border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 30px 0; overflow: hidden; margin: 5vh 0; }
         .marquee { display: flex; animation: scrollMarquee 25s linear infinite; }
         .marquee span { font-size: clamp(2rem, 8vw, 6vw); font-family: 'Playfair Display'; -webkit-text-stroke: 1px #222; color: transparent; padding-right: 80px; white-space: nowrap; }
-        @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-        /* Feed de Projetos */
+        /* Feed */
         .work-section { padding: 10vh 0; }
         .work-item { position: relative; margin-bottom: 20vh; width: 100%; cursor: pointer; }
         @media (min-width: 768px) { .work-item { width: 70%; } .work-right { margin-left: auto; } }
         
         .img-wrapper { width: 100%; height: 70vh; overflow: hidden; border-radius: 2px; background: #0a0a0a; position: relative; }
-        
-        /* Efeito P&B Revelação */
-        .img-wrapper img, .project-grid img, .project-header img { 
-            width: 100%; height: 100%; object-fit: cover; 
-            filter: grayscale(100%) brightness(0.7); 
-            transition: filter 0.8s var(--ease), transform 1.2s var(--ease); 
-        }
-        
-        .work-item:hover img, .work-item:active img,
-        .project-grid img:hover, .project-grid img:active,
-        .project-header:hover img { 
-            filter: grayscale(0%) brightness(1); 
-        }
-
-        .color-badge {
-            position: absolute; top: 20px; left: 20px; z-index: 10;
-            padding: 6px 12px; background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; font-size: 8px; letter-spacing: 2px; border-radius: 2px;
-            pointer-events: none; transition: 0.3s;
-        }
-        .work-item:hover .color-badge, .work-item:active .color-badge { background: #fff; color: #000; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) brightness(0.7); transition: 0.8s var(--ease); }
+        .work-item:hover img, .work-item:active img { filter: grayscale(0%) brightness(1); }
 
         .work-item h3 {
             position: absolute; bottom: -25px; left: 5%;
-            font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 5rem); 
+            font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 4rem); 
             font-style: italic; z-index: 10; text-shadow: 10px 10px 30px rgba(0,0,0,0.5);
         }
 
-        .cta-button {
-            background: #fff; color: #000; padding: 18px 40px; border-radius: 100px;
-            text-decoration: none; font-weight: 900; font-size: 0.7rem; letter-spacing: 3px;
-            text-transform: uppercase; transition: 0.3s var(--ease); display: inline-block; border: 1px solid transparent;
-        }
-
-        /* OVERLAY DO PROJETO - CORREÇÃO DE TAMANHO */
+        /* --- NOVO SLIDER DO ÁLBUM --- */
         #project-view {
-            position: fixed; inset: 0; background: #000; z-index: 3000;
-            display: none; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+            position: fixed; inset: 0; background: #000; z-index: 4000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        .project-header { height: 60vh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .project-header h2 { position: relative; z-index: 2; font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 6rem); font-style: italic; text-align: center; padding: 0 30px; pointer-events: none; }
+        .slider-header { position: absolute; top: 30px; left: 0; width: 100%; text-align: center; padding: 0 80px; z-index: 4100; }
+        .slider-header h2 { font-family: 'Playfair Display'; font-size: clamp(1.5rem, 5vw, 3rem); font-style: italic; color: #fff; }
 
-        .project-grid { 
-            padding: 60px 12vw; /* Mais respiro lateral */
-            display: flex; flex-direction: column; align-items: center; gap: 60px; 
+        .slider-wrapper {
+            position: relative; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
         }
-        .project-grid img { 
-            width: auto; max-width: 100%; 
-            max-height: 85vh; /* Impede que a foto vertical domine a tela toda */
-            object-fit: contain; border-radius: 2px; 
+
+        #view-grid {
+            display: flex; width: 100%; height: 100%;
+            overflow-x: scroll; scroll-snap-type: x mandatory;
+            scrollbar-width: none; -ms-overflow-style: none;
         }
+        #view-grid::-webkit-scrollbar { display: none; }
+
+        .slide {
+            flex: 0 0 100%; width: 100%; height: 100%;
+            scroll-snap-align: center;
+            display: flex; align-items: center; justify-content: center;
+            padding: 100px 5vw;
+        }
+        .slide img {
+            max-width: 100%; max-height: 80vh;
+            object-fit: contain; border-radius: 2px;
+            filter: grayscale(100%); transition: filter 0.8s var(--ease);
+            cursor: pointer;
+        }
+        .slide img:active, .slide img:hover { filter: grayscale(0%); }
+
+        .nav-arrow {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: #fff; font-size: 3rem;
+            cursor: pointer; z-index: 4200; padding: 20px; opacity: 0.3; transition: 0.3s;
+        }
+        .nav-arrow:hover { opacity: 1; }
+        .prev-arrow { left: 10px; }
+        .next-arrow { right: 10px; }
+
+        .slider-footer { position: absolute; bottom: 30px; width: 100%; text-align: center; z-index: 4100; }
+        #slide-counter { font-size: 10px; letter-spacing: 5px; color: #444; }
 
         .close-btn { 
-            position: fixed; top: 25px; right: 25px; width: 50px; height: 50px; 
+            position: fixed; top: 25px; right: 25px; width: 45px; height: 45px; 
             background: #fff; color: #000; border-radius: 50%; display: flex; 
             align-items: center; justify-content: center; font-size: 1.5rem; 
-            z-index: 4000; cursor: pointer;
+            z-index: 5000; cursor: pointer;
         }
 
         /* Admin */
-        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; padding: 10vh 5vw; overflow-y: auto; }
+        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 6000; display: none; padding: 10vh 5vw; overflow-y: auto; }
         .admin-box { max-width: 600px; margin: 0 auto; background: #0a0a0a; padding: 40px; border: 1px solid #111; }
         .admin-box input { width: 100%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #222; color: #fff; }
 
         footer { padding: 80px 0; text-align: center; }
         .foot-link { color: #333; text-decoration: none; font-size: 0.6rem; letter-spacing: 5px; display: block; margin-bottom: 15px; }
         .copyright { color: #111; font-size: 0.5rem; letter-spacing: 3px; cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .nav-arrow { display: none; } /* No celular usa apenas o deslize */
+            .slide { padding: 80px 2vw; }
+            .slider-header { padding: 0 60px; }
+        }
     </style>
 </head>
 
@@ -149,26 +156,38 @@
         <div id="upload-form">
             <input type="text" id="proj-title" placeholder="Nome do Projeto">
             <input type="file" id="proj-files" multiple accept="image/*">
-            <button onclick="handleUpload()" class="cta-button" id="upload-btn" style="width: 100%;">Publicar</button>
+            <button onclick="handleUpload()" style="width: 100%;" class="cta-button">Publicar</button>
         </div>
         <div id="edit-photos-container" style="display:none; margin-top:20px; border-top:1px solid #222; padding-top:20px;">
             <div id="edit-grid-content" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;"></div>
-            <button onclick="closePhotoEditor()" class="cta-button" style="width: 100%; margin-top:20px;">Voltar</button>
+            <button onclick="closePhotoEditor()" style="width: 100%; margin-top:20px;" class="cta-button">Voltar</button>
         </div>
         <div id="manage-list" style="margin-top:40px;"></div>
     </div>
 </div>
 
-<!-- Visualização de Projeto -->
+<!-- NOVO ÁLBUM HORIZONTAL -->
 <div id="project-view" data-lenis-prevent>
     <span class="close-btn" onclick="closeProject()">&times;</span>
-    <div class="project-header">
-        <img id="view-cover" src="" alt="">
-        <h2 id="view-title"></h2>
-        <div style="position: absolute; bottom: 30px; font-size: 8px; letter-spacing: 4px; opacity: 0.5; text-align: center; width: 100%;">TOQUE PARA REVELAR CORES ↓</div>
+    
+    <div class="slider-header">
+        <h2 id="view-title">Título do Projeto</h2>
     </div>
-    <div class="project-grid" id="view-grid"></div>
-    <div style="text-align: center; padding: 80px 0;"><button onclick="closeProject()" class="cta-button">Fechar</button></div>
+
+    <div class="slider-wrapper">
+        <button class="nav-arrow prev-arrow" onclick="slideNav(-1)">&#8249;</button>
+        
+        <div id="view-grid">
+            <!-- Slides entrarão aqui via JS -->
+        </div>
+
+        <button class="nav-arrow next-arrow" onclick="slideNav(1)">&#8250;</button>
+    </div>
+
+    <div class="slider-footer">
+        <span id="slide-counter">1 / 1</span>
+        <p style="font-size: 8px; letter-spacing: 2px; color: #222; margin-top: 10px;">DESLIZE PARA NAVEGAR</p>
+    </div>
 </div>
 
 <header>
@@ -176,7 +195,7 @@
         <div class="logo-wrap magnetic-target">
             <div class="logo-circle"><img src="logo.png" alt="BL"></div>
         </div>
-        <a href="https://wa.me/5531985534292" class="cta-button magnetic-target">Reservar</a>
+        <a href="https://wa.me/5531985534292" style="background: #fff; color: #000; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 900; font-size: 10px; letter-spacing: 2px;" class="magnetic-target">RESERVAR</a>
     </div>
 </header>
 
@@ -188,20 +207,18 @@
             <p style="max-width: 350px; color: #444; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 3px; line-height: 2;">
                 Direção visual estratégica. Cinema e arte integrados em identidades de alto impacto.
             </p>
-            <a href="#trabalhos" class="cta-button magnetic-target">Portfólio</a>
         </div>
     </section>
 
     <div class="marquee-wrap">
         <div class="marquee">
             <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span>
-            <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span>
         </div>
     </div>
 
     <section id="trabalhos" class="container work-section">
         <div id="feed-projetos">
-            <p style="text-align: center; letter-spacing: 5px; color: #111;">CARREGANDO...</p>
+            <p style="text-align: center; letter-spacing: 5px; color: #111;">SINCRONIZANDO...</p>
         </div>
     </section>
 </main>
@@ -247,7 +264,6 @@
                 item.className = `work-item ${index % 2 !== 0 ? 'work-right' : ''}`;
                 item.innerHTML = `
                     <div class="img-wrapper" onclick="viewProject('${data.id}')">
-                        <div class="color-badge">P&B : TOQUE P/ COR</div>
                         <img src="${data.images[0]}">
                     </div>
                     <h3>${data.title}</h3>
@@ -264,17 +280,48 @@
         } catch (e) { console.error(e); }
     }
 
+    // --- LOGICA DO SLIDER ---
+    const grid = document.getElementById('view-grid');
+    grid.addEventListener('scroll', () => {
+        const index = Math.round(grid.scrollLeft / grid.clientWidth);
+        const total = grid.children.length;
+        document.getElementById('slide-counter').innerText = `${index + 1} / ${total}`;
+    });
+
+    window.slideNav = (dir) => {
+        grid.scrollBy({ left: grid.clientWidth * dir, behavior: 'smooth' });
+    };
+
+    window.viewProject = (id) => {
+        const p = allProjects.find(x => x.id === id);
+        document.getElementById('view-title').innerText = p.title;
+        grid.innerHTML = '';
+        p.images.forEach(src => {
+            const slide = document.createElement('div');
+            slide.className = 'slide';
+            slide.innerHTML = `<img src="${src}">`;
+            grid.appendChild(slide);
+        });
+        document.getElementById('project-view').style.display = 'flex';
+        document.getElementById('slide-counter').innerText = `1 / ${p.images.length}`;
+        grid.scrollLeft = 0;
+        lenis.stop();
+    };
+
+    window.closeProject = () => { document.getElementById('project-view').style.display = 'none'; lenis.start(); };
+
+    // --- RESTANTE DAS FUNÇÕES ---
     window.openPhotoEditor = (id) => {
         const proj = allProjects.find(p => p.id === id);
         document.getElementById('upload-form').style.display = 'none';
         document.getElementById('manage-list').style.display = 'none';
         document.getElementById('edit-photos-container').style.display = 'block';
-        const grid = document.getElementById('edit-grid-content'); grid.innerHTML = '';
+        const eGrid = document.getElementById('edit-grid-content'); eGrid.innerHTML = '';
         proj.images.forEach((img, idx) => {
             const card = document.createElement('div'); card.style.position = 'relative';
             card.innerHTML = `<img src="${img}" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:4px;">
             <button onclick="removeSingleImage('${id}', ${idx})" style="position:absolute; top:5px; right:5px; background:red; color:#fff; border:none; border-radius:50%; width:20px; height:20px;">&times;</button>`;
-            grid.appendChild(card);
+            eGrid.appendChild(card);
         });
     };
 
@@ -284,61 +331,28 @@
         document.getElementById('edit-photos-container').style.display = 'none';
     };
 
+    window.handleUpload = async () => {
+        const title = document.getElementById('proj-title').value;
+        const files = document.getElementById('proj-files').files;
+        if (!title || files.length === 0) return alert("Preencha tudo.");
+        const compressed = [];
+        for (let file of files) {
+            const reader = new FileReader();
+            const b64 = await new Promise(r => { reader.readAsDataURL(file); reader.onload = () => r(reader.result); });
+            compressed.push(b64);
+        }
+        await addDoc(collection(db, "projects"), { title, images: compressed, createdAt: new Date() });
+        location.reload();
+    };
+
     window.removeSingleImage = async (id, idx) => {
         const proj = allProjects.find(p => p.id === id);
         const newImgs = [...proj.images]; newImgs.splice(idx, 1);
-        if(newImgs.length === 0) return alert("O projeto não pode ficar vazio.");
         await updateDoc(doc(db, "projects", id), { images: newImgs });
         location.reload();
     };
 
-    window.viewProject = (id) => {
-        const p = allProjects.find(x => x.id === id);
-        const grid = document.getElementById('view-grid');
-        document.getElementById('view-title').innerText = p.title;
-        document.getElementById('view-cover').src = p.images[0];
-        grid.innerHTML = '';
-        p.images.forEach(src => {
-            const img = document.createElement('img'); img.src = src; grid.appendChild(img);
-        });
-        document.getElementById('project-view').style.display = 'block';
-        lenis.stop();
-    };
-
-    window.closeProject = () => { document.getElementById('project-view').style.display = 'none'; lenis.start(); };
-    
-    window.handleUpload = async () => {
-        const title = document.getElementById('proj-title').value;
-        const files = document.getElementById('proj-files').files;
-        if (!title || files.length === 0) return alert("Título e fotos são obrigatórios.");
-        document.getElementById('upload-btn').innerText = "PUBLICANDO...";
-        const compressedImages = [];
-        for (let file of files) {
-            const img = await compressImage(file);
-            compressedImages.push(img);
-        }
-        await addDoc(collection(db, "projects"), { title, images: compressedImages, createdAt: new Date() });
-        location.reload();
-    };
-
-    function compressImage(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader(); reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                const img = new Image(); img.src = e.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 1200; let width = img.width, height = img.height;
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    canvas.width = width; canvas.height = height;
-                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.7));
-                };
-            };
-        });
-    }
-
-    window.deleteWholeProject = async (id) => { if (confirm("Apagar projeto?")) { await deleteDoc(doc(db, "projects", id)); loadContent(); } };
+    window.deleteWholeProject = async (id) => { if (confirm("Apagar?")) { await deleteDoc(doc(db, "projects", id)); loadContent(); } };
     window.addEventListener('load', loadContent);
 </script>
 
