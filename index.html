@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BLPRODUÇÕES | Direção Visual de Elite</title>
+    <title>BLPRODUÇÕES | Direção Visual</title>
 
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="apple-touch-icon" href="logo.png">
@@ -51,9 +51,15 @@
         .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; }
         .hero h1 { font-family: 'Playfair Display'; font-size: clamp(3.5rem, 16vw, 15rem); line-height: 0.85; text-transform: uppercase; font-style: italic; white-space: nowrap; will-change: transform; }
 
+        /* Marquee Corrigido */
         .marquee-wrap { border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 30px 0; overflow: hidden; margin: 5vh 0; }
-        .marquee { display: flex; animation: scrollMarquee 25s linear infinite; }
+        .marquee { display: flex; animation: scrollMarquee 20s linear infinite; width: max-content; }
         .marquee span { font-size: clamp(2rem, 8vw, 6vw); font-family: 'Playfair Display'; -webkit-text-stroke: 1px #222; color: transparent; padding-right: 80px; white-space: nowrap; }
+        
+        @keyframes scrollMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
 
         /* Feed */
         .work-section { padding: 10vh 0; }
@@ -64,7 +70,6 @@
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) brightness(0.7); transition: 0.8s var(--ease); }
         .work-item:hover img, .work-item:active img { filter: grayscale(0%) brightness(1); }
 
-        /* Frase indução Feed */
         .click-hint {
             position: absolute; bottom: 20px; right: 20px; background: #fff; color: #000; 
             padding: 8px 15px; border-radius: 50px; font-size: 9px; font-weight: 900; 
@@ -77,7 +82,7 @@
             font-style: italic; z-index: 10; text-shadow: 10px 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- SLIDER DO ÁLBUM --- */
+        /* Slider do Álbum */
         #project-view {
             position: fixed; inset: 0; background: #000; z-index: 4000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -192,7 +197,6 @@
 
     <div class="slider-footer">
         <span id="slide-counter">1 / 1</span>
-        <!-- FRASE DE INDUÇÃO ÁLBUM -->
         <p class="footer-hint">Toque na foto para revelar as cores // Deslize</p>
     </div>
 </div>
@@ -219,6 +223,7 @@
 
     <div class="marquee-wrap">
         <div class="marquee">
+            <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span>
             <span>ESTÉTICA</span><span>CINEMA</span><span>MODA</span><span>NARRATIVA</span>
         </div>
     </div>
