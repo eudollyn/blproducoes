@@ -64,13 +64,20 @@
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) brightness(0.7); transition: 0.8s var(--ease); }
         .work-item:hover img, .work-item:active img { filter: grayscale(0%) brightness(1); }
 
+        /* Frase indução Feed */
+        .click-hint {
+            position: absolute; bottom: 20px; right: 20px; background: #fff; color: #000; 
+            padding: 8px 15px; border-radius: 50px; font-size: 9px; font-weight: 900; 
+            letter-spacing: 2px; z-index: 5;
+        }
+
         .work-item h3 {
             position: absolute; bottom: -25px; left: 5%;
             font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 4rem); 
             font-style: italic; z-index: 10; text-shadow: 10px 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- NOVO SLIDER DO ÁLBUM --- */
+        /* --- SLIDER DO ÁLBUM --- */
         #project-view {
             position: fixed; inset: 0; background: #000; z-index: 4000;
             display: none; flex-direction: column; align-items: center; justify-content: center;
@@ -116,6 +123,7 @@
 
         .slider-footer { position: absolute; bottom: 30px; width: 100%; text-align: center; z-index: 4100; }
         #slide-counter { font-size: 10px; letter-spacing: 5px; color: #444; }
+        .footer-hint { font-size: 8px; letter-spacing: 2px; color: #555; margin-top: 10px; text-transform: uppercase; }
 
         .close-btn { 
             position: fixed; top: 25px; right: 25px; width: 45px; height: 45px; 
@@ -134,7 +142,7 @@
         .copyright { color: #111; font-size: 0.5rem; letter-spacing: 3px; cursor: pointer; }
 
         @media (max-width: 768px) {
-            .nav-arrow { display: none; } /* No celular usa apenas o deslize */
+            .nav-arrow { display: none; }
             .slide { padding: 80px 2vw; }
             .slider-header { padding: 0 60px; }
         }
@@ -166,27 +174,26 @@
     </div>
 </div>
 
-<!-- NOVO ÁLBUM HORIZONTAL -->
+<!-- ÁLBUM HORIZONTAL -->
 <div id="project-view" data-lenis-prevent>
     <span class="close-btn" onclick="closeProject()">&times;</span>
     
     <div class="slider-header">
-        <h2 id="view-title">Título do Projeto</h2>
+        <h2 id="view-title">Título</h2>
     </div>
 
     <div class="slider-wrapper">
         <button class="nav-arrow prev-arrow" onclick="slideNav(-1)">&#8249;</button>
         
-        <div id="view-grid">
-            <!-- Slides entrarão aqui via JS -->
-        </div>
+        <div id="view-grid"></div>
 
         <button class="nav-arrow next-arrow" onclick="slideNav(1)">&#8250;</button>
     </div>
 
     <div class="slider-footer">
         <span id="slide-counter">1 / 1</span>
-        <p style="font-size: 8px; letter-spacing: 2px; color: #222; margin-top: 10px;">DESLIZE PARA NAVEGAR</p>
+        <!-- FRASE DE INDUÇÃO ÁLBUM -->
+        <p class="footer-hint">Toque na foto para revelar as cores // Deslize</p>
     </div>
 </div>
 
@@ -264,6 +271,7 @@
                 item.className = `work-item ${index % 2 !== 0 ? 'work-right' : ''}`;
                 item.innerHTML = `
                     <div class="img-wrapper" onclick="viewProject('${data.id}')">
+                        <div class="click-hint">VER PROJETO</div>
                         <img src="${data.images[0]}">
                     </div>
                     <h3>${data.title}</h3>
@@ -280,7 +288,6 @@
         } catch (e) { console.error(e); }
     }
 
-    // --- LOGICA DO SLIDER ---
     const grid = document.getElementById('view-grid');
     grid.addEventListener('scroll', () => {
         const index = Math.round(grid.scrollLeft / grid.clientWidth);
@@ -288,9 +295,7 @@
         document.getElementById('slide-counter').innerText = `${index + 1} / ${total}`;
     });
 
-    window.slideNav = (dir) => {
-        grid.scrollBy({ left: grid.clientWidth * dir, behavior: 'smooth' });
-    };
+    window.slideNav = (dir) => { grid.scrollBy({ left: grid.clientWidth * dir, behavior: 'smooth' }); };
 
     window.viewProject = (id) => {
         const p = allProjects.find(x => x.id === id);
@@ -310,7 +315,6 @@
 
     window.closeProject = () => { document.getElementById('project-view').style.display = 'none'; lenis.start(); };
 
-    // --- RESTANTE DAS FUNÇÕES ---
     window.openPhotoEditor = (id) => {
         const proj = allProjects.find(p => p.id === id);
         document.getElementById('upload-form').style.display = 'none';
