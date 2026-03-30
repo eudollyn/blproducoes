@@ -42,7 +42,7 @@
 
         header { position: fixed; top: 0; width: 100%; padding: 30px 0; z-index: 1000; mix-blend-mode: difference; }
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
-        .logo-circle { width: 60px; height: 60px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; transition: transform 0.3s var(--ease); }
+        .logo-circle { width: 60px; height: 60px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
         .logo-circle img { width: 70%; height: 70%; object-fit: contain; }
 
         .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; }
@@ -50,8 +50,8 @@
 
         /* Marquee */
         .marquee-wrap { border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 30px 0; overflow: hidden; margin: 5vh 0; }
-        .marquee { display: flex; animation: scrollMarquee 20s linear infinite; }
-        .marquee span { font-size: clamp(2rem, 8vw, 6vw); font-family: 'Playfair Display'; -webkit-text-stroke: 1px #222; color: transparent; padding-right: 50px; white-space: nowrap; }
+        .marquee { display: flex; animation: scrollMarquee 25s linear infinite; }
+        .marquee span { font-size: clamp(2rem, 8vw, 6vw); font-family: 'Playfair Display'; -webkit-text-stroke: 1px #222; color: transparent; padding-right: 80px; white-space: nowrap; }
         @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
         /* Projetos */
@@ -63,7 +63,6 @@
         .work-item img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); transition: 1.5s var(--ease); filter: grayscale(0.5); }
         .work-item:hover img { transform: scale(1); filter: grayscale(0); }
         
-        /* Indicador de Projeto para Mobile e Desktop */
         .click-hint {
             position: absolute; bottom: 20px; right: 20px; background: #fff; color: #000; 
             padding: 8px 15px; border-radius: 50px; font-size: 10px; font-weight: 900; 
@@ -71,7 +70,7 @@
         }
 
         .work-item h3 {
-            position: absolute; bottom: -25px; left: 5%; /* Movido um pouco para a direita */
+            position: absolute; bottom: -25px; left: 5%;
             font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 5rem); 
             font-style: italic; z-index: 10; text-shadow: 10px 10px 30px rgba(0,0,0,0.5); pointer-events: none;
         }
@@ -80,6 +79,7 @@
             background: #fff; color: #000; padding: 18px 40px; border-radius: 100px;
             text-decoration: none; font-weight: 900; font-size: 0.7rem; letter-spacing: 3px;
             text-transform: uppercase; transition: 0.3s var(--ease); display: inline-block; border: 1px solid transparent;
+            cursor: pointer;
         }
 
         /* OVERLAY DO PROJETO */
@@ -87,11 +87,9 @@
             position: fixed; inset: 0; background: #000; z-index: 3000;
             display: none; overflow-y: auto; -webkit-overflow-scrolling: touch; 
         }
-
         .project-header { height: 70vh; width: 100%; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .project-header img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; }
         .project-header h2 { position: relative; z-index: 2; font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 6rem); font-style: italic; text-align: center; padding: 0 30px; }
-
         .project-grid { padding: 30px 5vw; display: flex; flex-direction: column; gap: 25px; }
         .project-grid img { width: 100%; height: auto; border-radius: 2px; }
 
@@ -102,10 +100,16 @@
             z-index: 4000; cursor: pointer;
         }
 
-        /* Admin */
+        /* Admin & Edição Individual */
         #admin-panel { position: fixed; inset: 0; background: #000; z-index: 5000; display: none; padding: 10vh 5vw; overflow-y: auto; }
         .admin-box { max-width: 600px; margin: 0 auto; background: #0a0a0a; padding: 40px; border: 1px solid #111; }
         .admin-box input { width: 100%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #222; color: #fff; }
+        
+        #edit-photos-container { margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; display: none; }
+        .edit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .edit-img-card { position: relative; width: 100%; aspect-ratio: 1; }
+        .edit-img-card img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+        .btn-mini-del { position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; width: 20px; height: 20px; border-radius: 50%; font-size: 12px; cursor: pointer; }
 
         footer { padding: 80px 0; text-align: center; }
         .foot-link { color: #333; text-decoration: none; font-size: 0.6rem; letter-spacing: 5px; display: block; margin-bottom: 15px; }
@@ -125,28 +129,33 @@
     <span class="close-btn" onclick="closeAdmin()">&times;</span>
     <div class="admin-box">
         <h2 style="font-family: 'Playfair Display'; margin-bottom: 30px;">Moderador</h2>
-        <input type="text" id="proj-title" placeholder="Nome do Projeto">
-        <input type="file" id="proj-files" multiple accept="image/*">
-        <button onclick="handleUpload()" class="cta-button" id="upload-btn" style="width: 100%;">Publicar Obra</button>
-        <div id="manage-list" style="margin-top:30px;"></div>
+        
+        <div id="upload-form">
+            <input type="text" id="proj-title" placeholder="Nome do Projeto">
+            <input type="file" id="proj-files" multiple accept="image/*">
+            <button onclick="handleUpload()" class="cta-button" id="upload-btn" style="width: 100%;">Publicar Novo Obra</button>
+        </div>
+
+        <div id="edit-photos-container">
+            <h4 id="editing-name" style="font-size: 12px; color: #666;">Editando Fotos: </h4>
+            <div class="edit-grid" id="edit-grid-content"></div>
+            <button onclick="closePhotoEditor()" class="cta-button" style="width: 100%; margin-top: 20px; font-size: 10px; padding: 10px;">Fechar Editor de Fotos</button>
+        </div>
+
+        <div id="manage-list" style="margin-top:40px;"></div>
     </div>
 </div>
 
 <!-- Visualização de Projeto -->
 <div id="project-view" data-lenis-prevent>
     <span class="close-btn" onclick="closeProject()">&times;</span>
-    
     <div class="project-header">
         <img id="view-cover" src="" alt="">
         <h2 id="view-title"></h2>
-        <div style="position: absolute; bottom: 30px; font-size: 10px; letter-spacing: 5px; opacity: 0.5;">SCROLL ↓</div>
+        <div style="position: absolute; bottom: 30px; font-size: 10px; letter-spacing: 5px; opacity: 0.5;">DESCER ↓</div>
     </div>
-
     <div class="project-grid" id="view-grid"></div>
-
-    <div style="text-align: center; padding: 80px 0;">
-        <button onclick="closeProject()" class="cta-button">Fechar Galeria</button>
-    </div>
+    <div style="text-align: center; padding: 80px 0;"><button onclick="closeProject()" class="cta-button">Fechar Galeria</button></div>
 </div>
 
 <header>
@@ -179,7 +188,7 @@
 
     <section id="trabalhos" class="container work-section">
         <div id="feed-projetos">
-            <p style="text-align: center; letter-spacing: 5px; color: #111;">CARREGANDO ACERVO...</p>
+            <p style="text-align: center; letter-spacing: 5px; color: #111;">SINCRONIZANDO ACERVO...</p>
         </div>
     </section>
 </main>
@@ -191,7 +200,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAf_6A_0Qff3Jvx0oBkWGCH_5sWQgqsl5w",
@@ -217,7 +226,7 @@
         try {
             const q = query(collection(db, "projects"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
-            feed.innerHTML = ''; manage.innerHTML = ''; allProjects = [];
+            feed.innerHTML = ''; manage.innerHTML = '<h4 style="margin-bottom:15px; font-size:10px; color:#444;">GESTÃO DE PORTFÓLIO</h4>'; allProjects = [];
             snapshot.forEach((docSnap, index) => {
                 const data = docSnap.data(); data.id = docSnap.id;
                 allProjects.push(data);
@@ -231,12 +240,66 @@
                     <h3>${data.title}</h3>
                 `;
                 feed.appendChild(item);
+
                 const mItem = document.createElement('div');
-                mItem.innerHTML = `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #111;"><span>${data.title}</span><button onclick="deleteProject('${data.id}')" style="color:red; background:none; border:none;">EXCLUIR</button></div>`;
+                mItem.style.cssText = "display:flex; flex-direction:column; gap:5px; margin-bottom:20px; padding:10px; border:1px solid #111;";
+                mItem.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span style="font-size:14px;">${data.title}</span>
+                        <button onclick="deleteWholeProject('${data.id}')" style="color:red; background:none; border:none; font-size:10px; cursor:pointer;">APAGAR TUDO</button>
+                    </div>
+                    <button onclick="openPhotoEditor('${data.id}')" style="width:100%; background:#222; color:#fff; border:none; padding:8px; font-size:10px; cursor:pointer;">GERENCIAR FOTOS (${data.images.length})</button>
+                `;
                 manage.appendChild(mItem);
             });
         } catch (e) { console.error(e); }
     }
+
+    // Gerenciador de Fotos Individuais
+    window.openPhotoEditor = (projectId) => {
+        const proj = allProjects.find(p => p.id === projectId);
+        document.getElementById('upload-form').style.display = 'none';
+        document.getElementById('manage-list').style.display = 'none';
+        document.getElementById('edit-photos-container').style.display = 'block';
+        document.getElementById('editing-name').innerText = "Editando Fotos: " + proj.title;
+        
+        const grid = document.getElementById('edit-grid-content');
+        grid.innerHTML = '';
+        proj.images.forEach((img, idx) => {
+            const card = document.createElement('div');
+            card.className = 'edit-img-card';
+            card.innerHTML = `
+                <img src="${img}">
+                <button class="btn-mini-del" onclick="removeSingleImage('${projectId}', ${idx})">&times;</button>
+            `;
+            grid.appendChild(card);
+        });
+    };
+
+    window.closePhotoEditor = () => {
+        document.getElementById('upload-form').style.display = 'block';
+        document.getElementById('manage-list').style.display = 'block';
+        document.getElementById('edit-photos-container').style.display = 'none';
+    };
+
+    window.removeSingleImage = async (projectId, imageIndex) => {
+        if(!confirm("Remover esta foto do projeto?")) return;
+        const proj = allProjects.find(p => p.id === projectId);
+        const newImages = [...proj.images];
+        newImages.splice(imageIndex, 1);
+
+        if(newImages.length === 0) {
+            alert("O projeto não pode ficar sem fotos. Use 'Apagar Tudo' se quiser remover o projeto.");
+            return;
+        }
+
+        try {
+            await updateDoc(doc(db, "projects", projectId), { images: newImages });
+            proj.images = newImages; // Atualiza cache local
+            openPhotoEditor(projectId); // Recarrega grade de edição
+            loadContent(); // Atualiza site ao fundo
+        } catch (e) { alert("Erro ao remover foto."); }
+    };
 
     window.viewProject = (id) => {
         const p = allProjects.find(x => x.id === id);
@@ -244,7 +307,6 @@
         document.getElementById('view-title').innerText = p.title;
         document.getElementById('view-cover').src = p.images[0];
         grid.innerHTML = '';
-        // Agora inclui TODAS as imagens, inclusive a primeira
         p.images.forEach(src => {
             const img = document.createElement('img'); img.src = src; grid.appendChild(img);
         });
@@ -253,15 +315,50 @@
     };
 
     window.closeProject = () => { document.getElementById('project-view').style.display = 'none'; lenis.start(); };
-    window.handleUpload = async () => { /* Mesma lógica anterior de compressão */ };
-    window.deleteProject = async (id) => { if (confirm("Excluir?")) { await deleteDoc(doc(db, "projects", id)); loadContent(); } };
+    
+    window.handleUpload = async () => {
+        const title = document.getElementById('proj-title').value;
+        const files = document.getElementById('proj-files').files;
+        if (!title || files.length === 0) return alert("Título e fotos são obrigatórios.");
+        document.getElementById('upload-btn').innerText = "PUBLICANDO...";
+        
+        const compressedImages = [];
+        for (let file of files) {
+            const img = await compressImage(file);
+            compressedImages.push(img);
+        }
+        await addDoc(collection(db, "projects"), { title, images: compressedImages, createdAt: new Date() });
+        location.reload();
+    };
+
+    function compressImage(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1200;
+                    let width = img.width, height = img.height;
+                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.7));
+                };
+            };
+        });
+    }
+
+    window.deleteWholeProject = async (id) => { if (confirm("Excluir projeto inteiro?")) { await deleteDoc(doc(db, "projects", id)); loadContent(); } };
     window.addEventListener('load', loadContent);
 </script>
 
 <script>
-    // --- Lógica de UI (Efeitos Magnéticos e Parallax) ---
     function openAdminPortal() { if (prompt("Acesso:") === "bl2026") document.getElementById('admin-panel').style.display = 'block'; }
-    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+    function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; closePhotoEditor(); }
 
     document.addEventListener('mousemove', (e) => {
         const cursor = document.getElementById('cursor');
