@@ -48,14 +48,19 @@
         .logo-circle { width: 55px; height: 55px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
         .logo-circle img { width: 70%; height: 70%; object-fit: contain; }
 
-        /* HERO - TEXTO SEPARADO */
+        /* HERO - TEXTO SEPARADO E AJUSTADO */
         .hero { min-height: 85vh; display: flex; flex-direction: column; justify-content: center; padding-top: 60px; }
         .hero h1 { font-family: 'Playfair Display'; font-size: clamp(4rem, 18vw, 15rem); line-height: 0.8; text-transform: uppercase; font-style: italic; white-space: nowrap; will-change: transform; }
 
         @media (max-width: 768px) {
-            .hero { min-height: 60vh; padding-top: 100px; justify-content: flex-start; }
-            .hero h1 { font-size: clamp(5.5rem, 24vw, 12rem); line-height: 0.85; margin-bottom: -5px; }
-            .hero-footer { margin-top: 40px !important; }
+            .hero { min-height: 65vh; padding-top: 120px; justify-content: flex-start; }
+            .hero h1 { 
+                font-size: 22vw; /* Tamanho que preenche a tela */
+                line-height: 0.9; 
+                white-space: normal; /* Permite que o texto se adapte */
+                margin-bottom: 0px;
+            }
+            .hero-footer { margin-top: 30px !important; }
         }
 
         /* MARQUEE */
@@ -150,10 +155,10 @@
 
 <main>
     <section class="container hero">
-        <!-- TÍTULO SEPARADO PARA PARALLAX -->
-        <h1 class="parallax-text" data-speed="-2.5">Além</h1>
-        <h1 class="parallax-text" data-speed="1.8" style="margin-left: 15vw;">Da</h1>
-        <h1 class="parallax-text" data-speed="-1.2" style="margin-left: 30vw;">Lente</h1>
+        <!-- TÍTULO SEPARADO E COM RECUOS CALCULADOS PARA MOBILE -->
+        <h1 class="parallax-text" data-speed="-2">Além</h1>
+        <h1 class="parallax-text" data-speed="1.5" style="margin-left: 8vw;">Da</h1>
+        <h1 class="parallax-text" data-speed="-1" style="margin-left: 4vw;">Lente</h1>
         
         <div class="hero-footer" style="margin-top: 5vh; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 20px;">
             <p style="max-width: 300px; color: #444; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; line-height: 1.8;">
@@ -164,8 +169,6 @@
 
     <div class="marquee-wrap">
         <div class="marquee">
-            <span class="m-solid">SONHOS ATRAVÉS DO NOSSO OLHAR •</span>
-            <span class="m-stroke">BLPRODUÇÕES •</span>
             <span class="m-solid">SONHOS ATRAVÉS DO NOSSO OLHAR •</span>
             <span class="m-stroke">BLPRODUÇÕES •</span>
             <span class="m-solid">SONHOS ATRAVÉS DO NOSSO OLHAR •</span>
@@ -304,8 +307,12 @@
 
     window.addEventListener('scroll', () => {
         const s = window.pageYOffset;
+        const isMobile = window.innerWidth < 768;
         document.querySelectorAll('.parallax-text').forEach(el => {
-            el.style.transform = `translateX(${s * el.dataset.speed * 0.05}px)`;
+            const speed = el.dataset.speed;
+            // No mobile o parallax é 50% mais sutil para não cortar o texto
+            const factor = isMobile ? 0.04 : 0.1;
+            el.style.transform = `translateX(${s * speed * factor}px)`;
         });
     });
 
