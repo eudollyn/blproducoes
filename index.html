@@ -1,47 +1,81 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <!-- ... (manter todo o head e styles iguais ao seu) ... -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BLPRODUÇÕES | Direção Visual</title>
-    <!-- Adicionando biblioteca para criptografia da senha -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
     <link rel="icon" type="image/png" href="logo.png">
-    <!-- ... (resto do head) ... -->
+    <link rel="apple-touch-icon" href="logo.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;900&family=Playfair+Display:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+
     <style>
-        /* Mantenha seus estilos aqui */
-        :root { --bg: #000; --fg: #fff; --ease: cubic-bezier(0.16, 1, 0.3, 1); }
+        :root {
+            --bg: #000;
+            --fg: #fff;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         html.lenis, html.lenis body { height: auto; }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
         body { background: var(--bg); color: var(--fg); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9997; opacity: 0.04; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-        @media (hover: hover) { * { cursor: none !important; } #cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: difference; } #cursor-follower { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 9998; transition: transform 0.1s linear; } }
-        #preloader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; transition: 1.2s var(--ease); }
+
+        .noise {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9997; opacity: 0.04; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        @media (hover: hover) {
+            * { cursor: none !important; }
+            #cursor { position: fixed; width: 8px; height: 8px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: difference; }
+            #cursor-follower { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; pointer-events: none; z-index: 9998; transition: transform 0.1s linear; }
+        }
+
+        #preloader {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: flex; align-items: center; justify-content: center; transition: 1.2s var(--ease);
+        }
         #preloader span { font-family: 'Playfair Display'; font-size: 1.2rem; letter-spacing: 15px; font-weight: 900; animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
         .container { max-width: 1600px; margin: 0 auto; padding: 0 5vw; }
+
         header { position: fixed; top: 0; width: 100%; padding: 20px 0; z-index: 1000; mix-blend-mode: difference; }
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
         .logo-circle { width: 55px; height: 55px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
         .logo-circle img { width: 70%; height: 70%; object-fit: contain; }
+
         .hero { min-height: 85vh; display: flex; flex-direction: column; justify-content: center; padding-top: 60px; }
         .hero h1 { font-family: 'Playfair Display'; font-size: clamp(4rem, 18vw, 15rem); line-height: 0.8; text-transform: uppercase; font-style: italic; white-space: nowrap; will-change: transform; }
-        @media (max-width: 768px) { .hero { min-height: 65vh; padding-top: 120px; justify-content: flex-start; } .hero h1 { font-size: 22vw; line-height: 0.9; white-space: normal; margin-bottom: 0px; } .hero-footer { margin-top: 30px !important; } }
+
+        @media (max-width: 768px) {
+            .hero { min-height: 65vh; padding-top: 120px; justify-content: flex-start; }
+            .hero h1 { font-size: 22vw; line-height: 0.9; white-space: normal; margin-bottom: 0px; }
+            .hero-footer { margin-top: 30px !important; }
+        }
+
         .marquee-wrap { border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 20px 0; overflow: hidden; margin: 3vh 0; }
         .marquee { display: flex; animation: scrollMarquee 30s linear infinite; width: max-content; align-items: center; }
         .marquee span { font-size: clamp(1.2rem, 5vw, 4vw); font-family: 'Playfair Display'; padding-right: 40px; white-space: nowrap; text-transform: uppercase; letter-spacing: 2px; }
         .m-solid { color: #fff; font-weight: 400; font-style: italic; }
         .m-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.3); color: transparent; font-weight: 900; }
         @keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
         .work-section { padding: 10vh 0; }
         .work-item { position: relative; margin-bottom: 15vh; width: 100%; cursor: pointer; }
         @media (min-width: 768px) { .work-item { width: 70%; } .work-right { margin-left: auto; } }
         .img-wrapper { width: 100%; height: 70vh; overflow: hidden; border-radius: 2px; background: #0a0a0a; position: relative; }
+        
+        /* EFEITO P&B NO FEED */
         .img-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%) brightness(0.7); transition: 0.8s var(--ease); }
         .work-item:hover img, .work-item:active img { filter: grayscale(0%) brightness(1); }
+        
         .click-hint { position: absolute; bottom: 20px; right: 20px; background: #fff; color: #000; padding: 8px 15px; border-radius: 50px; font-size: 9px; font-weight: 900; letter-spacing: 2px; z-index: 5; }
         .work-item h3 { position: absolute; bottom: -25px; left: 5%; font-family: 'Playfair Display'; font-size: clamp(2.5rem, 8vw, 4rem); font-style: italic; z-index: 10; text-shadow: 10px 10px 30px rgba(0,0,0,0.5); }
+
         #project-view { position: fixed; inset: 0; background: #000; z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .slider-header { position: absolute; top: 30px; width: 100%; text-align: center; z-index: 4100; padding: 0 60px; }
         .slider-header h2 { font-family: 'Playfair Display'; font-size: clamp(1.2rem, 4vw, 2.5rem); font-style: italic; color: #fff; }
@@ -49,15 +83,21 @@
         #view-grid { display: flex; width: 100%; height: 100%; overflow-x: scroll; scroll-snap-type: x mandatory; scrollbar-width: none; }
         #view-grid::-webkit-scrollbar { display: none; }
         .slide { flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; display: flex; align-items: center; justify-content: center; padding: 80px 5vw; }
+        
+        /* EFEITO P&B NO SLIDER */
         .slide img { max-width: 100%; max-height: 80vh; object-fit: contain; filter: grayscale(100%); transition: 0.8s; }
         .slide img:active, .slide img:hover { filter: grayscale(0%); }
+        
         .slider-footer { position: absolute; bottom: 30px; width: 100%; text-align: center; }
         #slide-counter { font-size: 10px; letter-spacing: 5px; color: #444; }
+
         .close-btn { position: fixed; top: 20px; right: 20px; width: 40px; height: 40px; background: #fff; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 5000; cursor: pointer; }
+
         #admin-panel { position: fixed; inset: 0; background: #000; z-index: 6000; display: none; padding: 5vh 5vw; overflow-y: auto; }
         .admin-box { max-width: 500px; margin: 0 auto; background: #0a0a0a; padding: 30px; border: 1px solid #111; }
         .admin-box input { width: 100%; padding: 12px; margin-bottom: 15px; background: #000; border: 1px solid #222; color: #fff; }
         .cta-button { background: #fff; color: #000; padding: 15px 35px; border-radius: 50px; text-decoration: none; font-weight: 900; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border: none; }
+
         footer { padding: 60px 0; text-align: center; }
         .foot-link { color: #333; text-decoration: none; font-size: 0.6rem; letter-spacing: 5px; display: block; margin-bottom: 10px; }
         .copyright { color: #111; font-size: 0.5rem; letter-spacing: 3px; cursor: pointer; }
@@ -74,7 +114,7 @@
 <div id="admin-panel" data-lenis-prevent>
     <span class="close-btn" onclick="closeAdmin()">&times;</span>
     <div class="admin-box">
-        <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px; font-size: 1.5rem;">Moderador HQ</h2>
+        <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px; font-size: 1.5rem;">Moderador</h2>
         <div id="upload-form">
             <input type="text" id="proj-title" placeholder="Nome do Projeto">
             <input type="file" id="proj-files" multiple accept="image/*">
@@ -84,7 +124,6 @@
     </div>
 </div>
 
-<!-- ... (resto do HTML igual) ... -->
 <div id="project-view" data-lenis-prevent>
     <span class="close-btn" onclick="closeProject()">&times;</span>
     <div class="slider-header"><h2 id="view-title">Título</h2></div>
@@ -143,6 +182,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // --- CLOUDINARY CONFIG ---
     const CLOUD_NAME = "dxcfqlset";
     const UPLOAD_PRESET = "blproducoes";
 
@@ -190,7 +230,9 @@
         const files = document.getElementById('proj-files').files;
         const btn = document.getElementById('publish-btn');
         if (!title || files.length === 0) return alert("Preencha título e fotos.");
-        btn.innerText = "SUBINDO PARA NUVEM..."; btn.disabled = true;
+
+        btn.innerText = "SUBINDO PARA NUVEM...";
+        btn.disabled = true;
 
         try {
             const uploadedUrls = [];
@@ -198,21 +240,42 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('upload_preset', UPLOAD_PRESET);
-                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
+
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
                 const json = await res.json();
                 if (json.secure_url) uploadedUrls.push(json.secure_url);
             }
-            await addDoc(collection(db, "projects"), { title, images: uploadedUrls, createdAt: new Date() });
+
+            await addDoc(collection(db, "projects"), {
+                title,
+                images: uploadedUrls,
+                createdAt: new Date()
+            });
+
+            alert("Projeto Publicado!");
             location.reload();
-        } catch (e) { alert("Erro no upload."); btn.innerText = "Publicar"; btn.disabled = false; }
+        } catch (e) {
+            console.error(e);
+            alert("Erro no upload.");
+            btn.innerText = "Publicar";
+            btn.disabled = false;
+        }
     };
 
     window.deleteWholeProject = async (id) => { if (confirm("Apagar projeto?")) { await deleteDoc(doc(db, "projects", id)); loadContent(); } };
 
+    const grid = document.getElementById('view-grid');
+    grid.addEventListener('scroll', () => {
+        const index = Math.round(grid.scrollLeft / grid.clientWidth);
+        document.getElementById('slide-counter').innerText = `${index + 1} / ${grid.children.length}`;
+    });
+
     window.viewProject = (id) => {
         const p = allProjects.find(x => x.id === id);
         document.getElementById('view-title').innerText = p.title;
-        const grid = document.getElementById('view-grid');
         grid.innerHTML = '';
         p.images.forEach(src => {
             const slide = document.createElement('div'); slide.className = 'slide'; slide.innerHTML = `<img src="${src}">`; grid.appendChild(slide);
@@ -222,42 +285,24 @@
         grid.scrollLeft = 0; lenis.stop();
     };
 
-    document.getElementById('view-grid').addEventListener('scroll', (e) => {
-        const grid = e.target;
-        const index = Math.round(grid.scrollLeft / grid.clientWidth);
-        document.getElementById('slide-counter').innerText = `${index + 1} / ${grid.children.length}`;
-    });
-
     window.closeProject = () => { document.getElementById('project-view').style.display = 'none'; lenis.start(); };
     window.addEventListener('load', loadContent);
 </script>
 
 <script>
-    // SEGURANÇA: A senha bl2026 convertida em SHA-256
-    const HASH_CORRETO = "ef92b3a1523f666f2122646c2452e8055655079a0937a0640df21f70518d69f0";
-
-    function openAdminPortal() {
-        const senha = prompt("Acesso restrito:");
-        if (!senha) return;
-        
-        // Compara o hash do que foi digitado com o hash gravado
-        const hashDigitado = CryptoJS.SHA256(senha).toString();
-        
-        if (hashDigitado === HASH_CORRETO) {
-            document.getElementById('admin-panel').style.display = 'block';
-        } else {
-            alert("Senha incorreta.");
-        }
-    }
-
+    function openAdminPortal() { if (prompt("Acesso:") === "bl2026") document.getElementById('admin-panel').style.display = 'block'; }
     function closeAdmin() { document.getElementById('admin-panel').style.display = 'none'; }
+
     window.addEventListener('scroll', () => {
         const s = window.pageYOffset;
+        const isMobile = window.innerWidth < 768;
         document.querySelectorAll('.parallax-text').forEach(el => {
             const speed = el.dataset.speed;
-            el.style.transform = `translateX(${s * speed * (window.innerWidth < 768 ? 0.04 : 0.1)}px)`;
+            const factor = isMobile ? 0.04 : 0.1;
+            el.style.transform = `translateX(${s * speed * factor}px)`;
         });
     });
+
     document.addEventListener('mousemove', (e) => {
         const cursor = document.getElementById('cursor');
         const follower = document.getElementById('cursor-follower');
@@ -271,6 +316,7 @@
             else t.style.transform = `translate3d(0,0,0)`;
         });
     });
+
     window.addEventListener('load', () => { setTimeout(() => { document.getElementById('preloader').style.opacity = '0'; setTimeout(() => document.getElementById('preloader').remove(), 1000); }, 1500); });
 </script>
 
