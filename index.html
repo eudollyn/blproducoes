@@ -114,7 +114,7 @@
 <div id="admin-panel" data-lenis-prevent>
     <span class="close-btn" onclick="closeAdmin()">&times;</span>
     <div class="admin-box">
-        <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px; font-size: 1.5rem;">Moderador HQ</h2>
+        <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px; font-size: 1.5rem;">Moderador</h2>
         <div id="upload-form">
             <input type="text" id="proj-title" placeholder="Nome do Projeto">
             <input type="file" id="proj-files" multiple accept="image/*">
@@ -231,7 +231,7 @@
         const btn = document.getElementById('publish-btn');
         if (!title || files.length === 0) return alert("Preencha título e fotos.");
 
-        btn.innerText = "SUBINDO PARA NUVEM HQ...";
+        btn.innerText = "SUBINDO PARA NUVEM...";
         btn.disabled = true;
 
         try {
@@ -255,12 +255,12 @@
                 createdAt: new Date()
             });
 
-            alert("Projeto HQ Publicado!");
+            alert("Projeto Publicado!");
             location.reload();
         } catch (e) {
             console.error(e);
             alert("Erro no upload.");
-            btn.innerText = "Publicar HQ";
+            btn.innerText = "Publicar";
             btn.disabled = false;
         }
     };
