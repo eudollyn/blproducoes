@@ -847,6 +847,50 @@
       font-size: 0.62rem;
     }
 
+
+
+    .event-admin-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .event-admin-item {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.025);
+      color: #fff;
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      transition: 0.22s var(--ease);
+    }
+
+    .event-admin-item:hover,
+    .event-admin-item.active {
+      border-color: rgba(255,255,255,0.34);
+      background: rgba(255,255,255,0.07);
+    }
+
+    .event-admin-item strong {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .event-admin-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
     .image-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
@@ -1021,9 +1065,10 @@
       <div class="gate-logo"><img src="logo.png" alt="BLPRODUÇÕES"></div>
       <span class="section-tag">Galeria privada</span>
       <h2>Acesso dos convidados.</h2>
-      <p>Digite a senha enviada pela equipe da BLPRODUÇÕES para liberar a galeria do site e os links das pastas compartilhadas.</p>
+      <p>Digite o login e a senha enviados pela equipe da BLPRODUÇÕES. Cada evento possui um acesso próprio e a página abre somente a cobertura correspondente.</p>
       <form class="gate-form" id="gateForm">
-        <input type="password" id="gatePass" placeholder="Digite a senha" autocomplete="off">
+        <input type="text" id="gateLogin" placeholder="Login do evento" autocomplete="off">
+        <input type="password" id="gatePass" placeholder="Senha do evento" autocomplete="off">
         <button class="btn btn-primary" type="submit">Entrar na galeria</button>
         <div class="gate-error" id="gateError"></div>
       </form>
@@ -1050,18 +1095,25 @@
           <h2>Painel da galeria</h2>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-secondary" onclick="loadGallery(true)">Sincronizar</button>
+          <button class="btn btn-secondary" onclick="startNewGalleryEvent()">Novo evento</button>
+          <button class="btn btn-secondary" onclick="loadAllGalleries(true)">Sincronizar</button>
           <button class="btn btn-secondary" onclick="logoutGalleryAdmin()">Sair</button>
         </div>
       </div>
 
       <div class="admin-layout">
         <div class="admin-box">
-          <h3>Dados do casamento</h3>
+          <h3 id="adminFormTitle">Dados do evento</h3>
           <div class="admin-grid">
-            <input class="full" type="text" id="adm-casal" placeholder="Nome dos noivos">
+            <input class="full" type="text" id="adm-login" placeholder="Login dos convidados. Ex: samuel e lydia">
+            <input class="full" type="text" id="adm-casal" placeholder="Nome dos noivos / nome do evento">
             <input class="full" type="text" id="adm-data-local" placeholder="Ex: Casamento • Belo Horizonte/MG • 2026">
-            <input class="full" type="text" id="adm-senha" placeholder="Senha dos convidados">
+            <select class="full" id="adm-media-type" aria-label="Tipo de cobertura">
+              <option value="photo-video">Cobertura com fotos e vídeos</option>
+              <option value="video">Somente vídeos / filmmaker</option>
+              <option value="photo">Somente fotos</option>
+            </select>
+            <input class="full" type="text" id="adm-senha" placeholder="Senha dos convidados. Ex: s&m2026">
             <input class="full" type="text" id="adm-capa" placeholder="URL da capa (opcional)">
             <input class="full" type="text" id="adm-whatsapp" placeholder="Link do WhatsApp de suporte">
             <textarea class="full" id="adm-descricao" placeholder="Descrição da galeria"></textarea>
@@ -1075,10 +1127,10 @@
           </div>
 
           <div class="file-input-wrap">
-            <div style="font-size:0.76rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Subir fotos para a galeria</div>
+            <div id="uploadTitle" style="font-size:0.76rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Subir prévias para a galeria</div>
             <input type="file" id="galleryFiles" multiple accept="image/*">
             <div class="admin-actions">
-              <button class="btn btn-primary" id="uploadGalleryBtn" onclick="handleGalleryUpload()">Subir fotos</button>
+              <button class="btn btn-primary" id="uploadGalleryBtn" onclick="handleGalleryUpload()">Subir prévias</button>
               <button class="btn btn-secondary" onclick="clearGalleryFileInput()">Limpar seleção</button>
             </div>
           </div>
@@ -1087,8 +1139,12 @@
         </div>
 
         <div class="admin-box">
-          <h3>Fotos publicadas</h3>
-          <p class="section-copy" style="font-size:0.82rem; margin-bottom:12px;">As fotos ficam no Cloudinary e os links são salvos no Firestore, usando o mesmo Firebase do site atual.</p>
+          <h3>Eventos cadastrados</h3>
+          <p class="section-copy" style="font-size:0.82rem; margin-bottom:12px;">Selecione um evento para editar dados, subir fotos e ajustar os links de entrega.</p>
+          <div id="adminEventList" class="event-admin-list"></div>
+
+          <h3 id="adminImagesTitle" style="margin-top:18px;">Prévias publicadas</h3>
+          <p class="section-copy" id="adminImagesCopy" style="font-size:0.82rem; margin-bottom:12px;">As imagens de prévia ficam no Cloudinary e os links são salvos no Firestore, usando o mesmo Firebase do site atual.</p>
           <div id="adminImageList" class="image-list"></div>
         </div>
       </div>
@@ -1107,7 +1163,7 @@
 
       <div class="nav-actions">
         <a href="index.html" class="btn btn-ghost">Início</a>
-        <a href="#links" class="btn btn-ghost">Entregas</a>
+        <a href="#links" class="btn btn-ghost">Acessos</a>
         <a href="https://wa.me/5531985534292" target="_blank" class="btn btn-primary" id="navWhatsapp">Suporte</a>
       </div>
     </div>
@@ -1122,12 +1178,12 @@
           <h1>Digital</h1>
 
           <p class="hero-description" id="heroDescription">
-            Fotos selecionadas no site e entrega final por pastas compartilhadas no Drive, em uma experiência privada, simples e elegante para convidados.
+            Cobertura privada com prévias no site e entrega final por pastas compartilhadas no Drive, em uma experiência simples e elegante para convidados.
           </p>
 
           <div class="hero-cta">
-            <a href="#links" class="btn btn-primary">Ver entregas</a>
-            <a href="#previas" class="btn btn-secondary">Ver fotos</a>
+            <a href="#links" class="btn btn-primary" id="accessCta">Ver entrega</a>
+            <a href="#previas" class="btn btn-secondary" id="previewCta">Ver prévias</a>
           </div>
         </div>
 
@@ -1152,9 +1208,9 @@
     </div>
 
     <section class="container access-section" id="links">
-      <span class="section-tag">Links de entrega</span>
-      <h2 class="section-title">Pastas liberadas no Drive.</h2>
-      <p class="section-copy">As fotos selecionadas aparecem abaixo dentro do site. Use estes botões apenas para abrir as pastas compartilhadas de entrega, como fotos em alta, vídeos e pacote completo.</p>
+      <span class="section-tag" id="accessTag">Links de entrega</span>
+      <h2 class="section-title" id="accessTitle">Pastas liberadas no Drive.</h2>
+      <p class="section-copy" id="accessCopy">As prévias selecionadas podem aparecer abaixo dentro do site. Os botões abaixo abrem apenas as pastas de entrega do evento acessado com esse login e senha.</p>
 
       <div class="access-grid" id="accessGrid"></div>
     </section>
@@ -1162,11 +1218,11 @@
     <section class="container preview-section" id="previas">
       <div class="preview-toolbar">
         <div>
-          <span class="section-tag">Galeria visual</span>
-          <h2 class="section-title" style="margin-bottom:10px;">Momentos publicados.</h2>
-          <p class="section-copy">Estas são as fotos selecionadas para visualização dentro do site. Para arquivos completos em alta qualidade, use as pastas do Drive acima.</p>
+          <span class="section-tag" id="previewTag">Galeria visual</span>
+          <h2 class="section-title" id="previewTitle" style="margin-bottom:10px;">Prévias publicadas.</h2>
+          <p class="section-copy" id="previewCopy">Estas são as imagens selecionadas para visualização dentro do site. Para arquivos completos em alta qualidade, use as pastas do Drive acima.</p>
         </div>
-        <a href="#links" class="btn btn-secondary">Abrir entregas</a>
+        <a href="#links" class="btn btn-secondary">Abrir links</a>
       </div>
 
       <div class="preview-grid" id="previewGrid"></div>
@@ -1204,25 +1260,24 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import {
       getFirestore,
+      collection,
       doc,
-      getDoc,
+      getDocs,
       setDoc,
       updateDoc
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     /*
-      Esta página usa a mesma lógica do painel do portfólio:
-      - Cloudinary para upload das imagens.
-      - Firestore para salvar os dados.
-      - Mesmo firebaseConfig, CLOUD_NAME e UPLOAD_PRESET do index.html.
-
-      Para criar outra galeria, duplique esta página e troque o GALLERY_ID.
+      Sistema multi-evento da BLPRODUÇÕES:
+      - Uma única página para todos os eventos.
+      - Cada documento em /galleries representa uma cobertura.
+      - O convidado digita login + senha e só carrega o evento correspondente.
+      - O painel admin cria/edita eventos e sobe prévias para o evento selecionado.
     */
 
     const CLOUD_NAME = "dxcfqlset";
     const UPLOAD_PRESET = "blproducoes";
     const GALLERY_COLLECTION = "galleries";
-    const GALLERY_ID = "casamento-principal";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAf_6A_0Qff3Jvx0oBkWGCH_5sWQgqsl5w",
@@ -1235,47 +1290,52 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const galleryRef = doc(db, GALLERY_COLLECTION, GALLERY_ID);
 
     const DEFAULT_GALLERY = {
-      casal: "Ana & João",
+      guestLogin: "samuel e lydia",
+      casal: "Samuel & Lydia",
       dataLocal: "Casamento • Belo Horizonte/MG • 2026",
-      descricao: "Galeria privada com fotos, vídeos e arquivos do casamento. Obrigado por fazer parte desse dia.",
-      guestPassword: "bl2026",
+      descricao: "Cobertura privada com prévias, vídeos e arquivos do evento. Obrigado por fazer parte desse dia.",
+      guestPassword: "s&m2026",
+      mediaType: "photo-video",
       capa: "",
-      whatsapp: "https://wa.me/5531985534292?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20a%20galeria%20do%20casamento.",
+      whatsapp: "https://wa.me/5531985534292?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20a%20galeria%20do%20evento.",
       accesses: [
         {
-          tipo: "Fotos em alta",
-          titulo: "Fotos em alta no Drive",
-          texto: "Abra a pasta compartilhada no Drive com as fotos em alta qualidade liberadas para os convidados.",
-          link: "https://drive.google.com/"
-        },
-        {
           tipo: "Vídeos",
-          titulo: "Vídeos do casamento",
-          texto: "Abra a pasta compartilhada no Drive com os vídeos editados e materiais liberados.",
-          link: "https://drive.google.com/"
+          titulo: "Vídeos do evento",
+          texto: "Abra a pasta compartilhada no Drive com os vídeos editados e materiais liberados para este evento.",
+          link: ""
         },
         {
           tipo: "Pacote completo",
           titulo: "Download final no Drive",
           texto: "Baixe a pasta ou o pacote final com os arquivos organizados em alta qualidade.",
-          link: "https://drive.google.com/"
+          link: ""
+        },
+        {
+          tipo: "Fotos em alta",
+          titulo: "Fotos em alta no Drive",
+          texto: "Use este botão apenas quando o evento tiver fotos finais em alta resolução.",
+          link: ""
         }
       ],
       images: []
     };
 
     const ADMIN_SESSION_KEY = "bl-gallery-admin-auth";
-    const GUEST_SESSION_KEY = `bl-gallery-guest-${GALLERY_ID}`;
+    const ACTIVE_GALLERY_SESSION_KEY = "bl-gallery-active-event-id";
     const ADMIN_HASH = "ebce6cc98b7739668eb8ba689e8db0bac90d090755d20d4ee44d09c58724d828";
 
+    let allGalleries = [];
+    let activeGalleryId = null;
     let galleryData = structuredClone(DEFAULT_GALLERY);
     let currentLightboxIndex = 0;
+    let isCreatingNewEvent = false;
 
     const gate = document.getElementById("gate");
     const gateForm = document.getElementById("gateForm");
+    const gateLogin = document.getElementById("gateLogin");
     const gatePass = document.getElementById("gatePass");
     const gateError = document.getElementById("gateError");
     const eventCover = document.getElementById("eventCover");
@@ -1284,12 +1344,73 @@
     const adminStatus = document.getElementById("adminStatus");
     const adminImageList = document.getElementById("adminImageList");
     const accessAdminList = document.getElementById("accessAdminList");
+    const adminEventList = document.getElementById("adminEventList");
+    const previewSection = document.getElementById("previas");
+    const previewCta = document.getElementById("previewCta");
+    const accessTitle = document.getElementById("accessTitle");
+    const accessCopy = document.getElementById("accessCopy");
+    const previewTag = document.getElementById("previewTag");
+    const previewTitle = document.getElementById("previewTitle");
+    const previewCopy = document.getElementById("previewCopy");
+    const uploadTitle = document.getElementById("uploadTitle");
+    const adminImagesTitle = document.getElementById("adminImagesTitle");
+    const adminImagesCopy = document.getElementById("adminImagesCopy");
 
     function cloneDefault() {
       return JSON.parse(JSON.stringify(DEFAULT_GALLERY));
     }
 
-    function sanitizeGallery(data = {}) {
+    function normalizeCredential(value = "") {
+      return String(value)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function slugify(value = "evento") {
+      const slug = normalizeCredential(value)
+        .replace(/&/g, " e ")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 70);
+      return slug || `evento-${Date.now()}`;
+    }
+
+    function uniqueGalleryId(baseValue) {
+      const base = slugify(baseValue);
+      const usedIds = new Set(allGalleries.map((item) => item.id));
+      if (!usedIds.has(base)) return base;
+      let index = 2;
+      while (usedIds.has(`${base}-${index}`)) index += 1;
+      return `${base}-${index}`;
+    }
+
+    function activeGalleryRef() {
+      if (!activeGalleryId) return null;
+      return doc(db, GALLERY_COLLECTION, activeGalleryId);
+    }
+
+    function normalizeMediaType(value = "photo-video") {
+      const allowed = ["photo-video", "video", "photo"];
+      return allowed.includes(value) ? value : "photo-video";
+    }
+
+    function isVideoOnly() {
+      return normalizeMediaType(galleryData.mediaType) === "video";
+    }
+
+    function isPhotoOnly() {
+      return normalizeMediaType(galleryData.mediaType) === "photo";
+    }
+
+    function hasValidLink(link = "") {
+      const clean = String(link || "").trim();
+      return clean && clean !== "#";
+    }
+
+    function sanitizeGallery(data = {}, id = null) {
       const defaults = cloneDefault();
       const accesses = Array.isArray(data.accesses) && data.accesses.length
         ? data.accesses
@@ -1298,18 +1419,15 @@
       return {
         ...defaults,
         ...data,
-        accesses: accesses.map((item, index) => {
-          const fallback = defaults.accesses[index] || { tipo: "Link", titulo: "Pasta liberada", texto: "Abra a pasta compartilhada pela equipe.", link: "https://drive.google.com/" };
-          const rawLink = item.link || fallback.link || "#";
-          const isOldGooglePhotos = String(rawLink).includes("photos.google.com");
-
-          return {
-            tipo: isOldGooglePhotos ? fallback.tipo : (item.tipo || fallback.tipo || "Link"),
-            titulo: isOldGooglePhotos ? fallback.titulo : (item.titulo || fallback.titulo || "Pasta liberada"),
-            texto: isOldGooglePhotos ? fallback.texto : (item.texto || fallback.texto || "Abra a pasta compartilhada pela equipe."),
-            link: isOldGooglePhotos ? fallback.link : rawLink
-          };
-        }),
+        id,
+        guestLogin: data.guestLogin || data.login || defaults.guestLogin,
+        mediaType: normalizeMediaType(data.mediaType || defaults.mediaType),
+        accesses: accesses.map((item, index) => ({
+          tipo: item.tipo ?? defaults.accesses[index]?.tipo ?? "Acesso",
+          titulo: item.titulo ?? defaults.accesses[index]?.titulo ?? "Link da galeria",
+          texto: item.texto ?? defaults.accesses[index]?.texto ?? "Abra o link liberado pela equipe.",
+          link: item.link ?? defaults.accesses[index]?.link ?? ""
+        })),
         images: Array.isArray(data.images) ? data.images.filter(Boolean) : []
       };
     }
@@ -1338,13 +1456,44 @@
     }
 
     function fillEvent() {
+      const mediaType = normalizeMediaType(galleryData.mediaType);
+      const videoOnly = mediaType === "video";
+      const photoOnly = mediaType === "photo";
+      const hasPreviews = galleryData.images.length > 0;
+
       document.getElementById("eventCouple").textContent = galleryData.casal;
       document.getElementById("eventInfo").textContent = galleryData.dataLocal;
       document.getElementById("heroDescription").textContent = galleryData.descricao;
+      document.getElementById("eventLabel").textContent = videoOnly
+        ? "Cobertura em vídeo"
+        : photoOnly
+        ? "Cobertura fotográfica"
+        : "Cobertura completa";
 
       document.querySelectorAll("#navWhatsapp, #helpWhatsapp, #footerWhatsapp, #floatWhatsapp").forEach((link) => {
         link.href = galleryData.whatsapp || DEFAULT_GALLERY.whatsapp;
       });
+
+      accessTitle.textContent = videoOnly ? "Vídeos liberados no Drive." : "Pastas liberadas no Drive.";
+      accessCopy.textContent = videoOnly
+        ? "Os botões abaixo abrem somente as pastas de vídeo deste evento. Não há pasta de fotos para esta cobertura."
+        : "As prévias selecionadas podem aparecer abaixo dentro do site. Os botões abaixo abrem apenas as pastas de entrega do evento acessado com esse login e senha.";
+
+      previewSection.style.display = videoOnly && !hasPreviews ? "none" : "block";
+      previewCta.style.display = videoOnly && !hasPreviews ? "none" : "inline-flex";
+      previewCta.textContent = videoOnly ? "Ver prévias" : "Ver prévias";
+
+      previewTag.textContent = videoOnly ? "Prévias do vídeo" : "Galeria visual";
+      previewTitle.textContent = videoOnly ? "Cenas publicadas." : "Prévias publicadas.";
+      previewCopy.textContent = videoOnly
+        ? "Estas são imagens de capa ou frames selecionados dos vídeos. Para assistir ou baixar o material final, use os links do Drive acima."
+        : "Estas são as imagens selecionadas para visualização dentro do site. Para arquivos completos em alta qualidade, use as pastas do Drive acima.";
+
+      uploadTitle.textContent = videoOnly ? "Subir capas ou frames de prévia" : "Subir prévias para a galeria";
+      adminImagesTitle.textContent = videoOnly ? "Capas/frames publicados" : "Prévias publicadas";
+      adminImagesCopy.textContent = videoOnly
+        ? "Use esta área apenas para imagens de capa ou frames dos vídeos. Os vídeos pesados devem ficar no Drive."
+        : "As imagens de prévia ficam no Cloudinary e os links são salvos no Firestore, usando o mesmo Firebase do site atual.";
 
       eventCover.classList.remove("logo-mode");
 
@@ -1361,7 +1510,18 @@
     function renderAccess() {
       accessGrid.innerHTML = "";
 
-      galleryData.accesses.forEach((item) => {
+      const validAccesses = (galleryData.accesses || []).filter((item) => hasValidLink(item.link));
+
+      if (!validAccesses.length) {
+        accessGrid.innerHTML = `
+          <div class="empty-state" style="grid-column:1/-1;">
+            Nenhum link de entrega foi publicado ainda para este evento.
+          </div>
+        `;
+        return;
+      }
+
+      validAccesses.forEach((item) => {
         const card = document.createElement("article");
         card.className = "access-card";
         card.innerHTML = `
@@ -1370,7 +1530,7 @@
             <strong>${item.titulo}</strong>
             <p>${item.texto}</p>
           </div>
-          <a href="${item.link || '#'}" target="_blank" class="btn btn-primary">Abrir</a>
+          <a href="${item.link}" target="_blank" class="btn btn-primary">Abrir</a>
         `;
         accessGrid.appendChild(card);
       });
@@ -1379,10 +1539,14 @@
     function renderPreviews() {
       previewGrid.innerHTML = "";
 
+      const videoOnly = isVideoOnly();
+
       if (!galleryData.images.length) {
         previewGrid.innerHTML = `
           <div class="empty-state" style="grid-column:1/-1;">
-            Nenhuma foto foi publicada ainda. No rodapé, clique em <code>GALERIA PRIVADA</code>, entre no painel interno e suba as imagens do casamento.
+            ${videoOnly
+              ? "Este evento é uma cobertura em vídeo. Use os botões do Drive acima para assistir ou baixar os vídeos liberados."
+              : "Nenhuma prévia foi publicada ainda para este evento. O admin pode abrir o painel no rodapé, selecionar o evento e subir as imagens."}
           </div>
         `;
         return;
@@ -1394,8 +1558,8 @@
         card.className = `photo-card ${index % 7 === 0 ? "large" : ""}`;
         card.onclick = () => openLightbox(index);
         card.innerHTML = `
-          <img src="${optimizeCloudinary(src, index % 7 === 0 ? 1500 : 900, 74)}" alt="Foto ${index + 1} - ${galleryData.casal}" loading="lazy">
-          <span>Foto ${String(index + 1).padStart(2, "0")}</span>
+          <img src="${optimizeCloudinary(src, index % 7 === 0 ? 1500 : 900, 74)}" alt="Prévia ${index + 1} - ${galleryData.casal}" loading="lazy">
+          <span>${videoOnly ? "Cena" : "Prévia"} ${String(index + 1).padStart(2, "0")}</span>
         `;
         previewGrid.appendChild(card);
       });
@@ -1404,8 +1568,13 @@
     function renderAdminImages() {
       adminImageList.innerHTML = "";
 
+      if (!activeGalleryId) {
+        adminImageList.innerHTML = `<div class="empty-state" style="grid-column:1/-1; padding:28px 14px;">Salve o evento primeiro para subir prévias.</div>`;
+        return;
+      }
+
       if (!galleryData.images.length) {
-        adminImageList.innerHTML = `<div class="empty-state" style="grid-column:1/-1; padding:28px 14px;">Nenhuma foto publicada.</div>`;
+        adminImageList.innerHTML = `<div class="empty-state" style="grid-column:1/-1; padding:28px 14px;">Nenhuma prévia publicada neste evento.</div>`;
         return;
       }
 
@@ -1413,10 +1582,33 @@
         const item = document.createElement("div");
         item.className = "image-item";
         item.innerHTML = `
-          <img src="${optimizeCloudinary(src, 360, 68)}" alt="Foto ${index + 1}">
-          <button class="delete-btn" title="Excluir foto" onclick="deleteGalleryImage('${encodeURIComponent(src)}')">&times;</button>
+          <img src="${optimizeCloudinary(src, 360, 68)}" alt="Prévia ${index + 1}">
+          <button class="delete-btn" title="Excluir prévia" onclick="deleteGalleryImage('${encodeURIComponent(src)}')">&times;</button>
         `;
         adminImageList.appendChild(item);
+      });
+    }
+
+    function renderAdminEventList() {
+      adminEventList.innerHTML = "";
+
+      if (!allGalleries.length) {
+        adminEventList.innerHTML = `<div class="empty-state" style="padding:24px 14px;">Nenhum evento cadastrado. Clique em Novo evento para começar.</div>`;
+        return;
+      }
+
+      allGalleries.forEach((eventItem) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `event-admin-item ${eventItem.id === activeGalleryId ? "active" : ""}`;
+        button.onclick = () => selectGalleryEvent(eventItem.id);
+        button.innerHTML = `
+          <strong>${eventItem.casal || "Evento sem nome"}</strong>
+          <span>Login: ${eventItem.guestLogin || "não definido"}</span>
+          <span>${eventItem.dataLocal || "Sem data/local"}</span>
+          <span>${(eventItem.images || []).length} prévia(s)</span>
+        `;
+        adminEventList.appendChild(button);
       });
     }
 
@@ -1425,6 +1617,7 @@
       renderAccess();
       renderPreviews();
       renderAdminImages();
+      renderAdminEventList();
     }
 
     function fillAccessAdminList() {
@@ -1435,7 +1628,7 @@
         box.className = "access-admin-item";
         box.innerHTML = `
           <small>Link de entrega ${index + 1}</small>
-          <input type="text" data-access-field="tipo" data-access-index="${index}" placeholder="Tipo (ex: Fotos em alta, Vídeos, Pacote completo)" value="${item.tipo || ''}">
+          <input type="text" data-access-field="tipo" data-access-index="${index}" placeholder="Tipo (ex: Vídeos, Pacote completo, Fotos em alta)" value="${item.tipo || ''}">
           <input type="text" data-access-field="titulo" data-access-index="${index}" placeholder="Título do botão" value="${item.titulo || ''}">
           <textarea data-access-field="texto" data-access-index="${index}" placeholder="Texto explicando o que tem nessa pasta">${item.texto || ''}</textarea>
           <input type="text" data-access-field="link" data-access-index="${index}" placeholder="Link da pasta compartilhada no Drive" value="${item.link || ''}">
@@ -1445,56 +1638,113 @@
     }
 
     function fillAdminForm() {
+      document.getElementById("adminFormTitle").textContent = isCreatingNewEvent ? "Novo evento" : "Dados do evento";
+      document.getElementById("adm-login").value = galleryData.guestLogin || "";
       document.getElementById("adm-casal").value = galleryData.casal || "";
       document.getElementById("adm-data-local").value = galleryData.dataLocal || "";
+      document.getElementById("adm-media-type").value = normalizeMediaType(galleryData.mediaType);
       document.getElementById("adm-senha").value = galleryData.guestPassword || "";
       document.getElementById("adm-capa").value = galleryData.capa || "";
       document.getElementById("adm-whatsapp").value = galleryData.whatsapp || "";
       document.getElementById("adm-descricao").value = galleryData.descricao || "";
       fillAccessAdminList();
       renderAdminImages();
-      setAdminStatus("Campos carregados com os dados atuais da galeria.");
+      renderAdminEventList();
+      setAdminStatus(activeGalleryId
+        ? `Editando evento: ${galleryData.casal}.`
+        : "Novo evento: preencha login, senha e salve antes de subir fotos.");
     }
 
     window.fillAdminForm = fillAdminForm;
 
-    async function loadGallery(showSuccess = false) {
-      try {
-        const snap = await getDoc(galleryRef);
-        galleryData = sanitizeGallery(snap.exists() ? snap.data() : DEFAULT_GALLERY);
-        renderAll();
-        fillAdminForm();
+    function selectGalleryEvent(id, shouldUnlock = false) {
+      const found = allGalleries.find((item) => item.id === id);
+      if (!found) return false;
 
-        if (sessionStorage.getItem(GUEST_SESSION_KEY) === "true") unlockGallery();
-        if (showSuccess) showToast("Galeria sincronizada.");
+      activeGalleryId = found.id;
+      galleryData = sanitizeGallery(found, found.id);
+      isCreatingNewEvent = false;
+      renderAll();
+      fillAdminForm();
+
+      if (shouldUnlock) unlockGallery();
+      return true;
+    }
+
+    window.selectGalleryEvent = selectGalleryEvent;
+
+    async function loadAllGalleries(showSuccess = false) {
+      try {
+        const snapshot = await getDocs(collection(db, GALLERY_COLLECTION));
+        allGalleries = [];
+
+        snapshot.forEach((docSnap) => {
+          allGalleries.push(sanitizeGallery(docSnap.data(), docSnap.id));
+        });
+
+        allGalleries.sort((a, b) => {
+          const da = a.updatedAt?.toDate ? a.updatedAt.toDate().getTime() : new Date(a.updatedAt || 0).getTime();
+          const dbb = b.updatedAt?.toDate ? b.updatedAt.toDate().getTime() : new Date(b.updatedAt || 0).getTime();
+          return dbb - da;
+        });
+
+        const storedId = sessionStorage.getItem(ACTIVE_GALLERY_SESSION_KEY);
+
+        if (activeGalleryId && allGalleries.some((item) => item.id === activeGalleryId)) {
+          selectGalleryEvent(activeGalleryId, false);
+        } else if (storedId && allGalleries.some((item) => item.id === storedId)) {
+          selectGalleryEvent(storedId, true);
+        } else if (allGalleries.length && document.getElementById("admin-panel").style.display === "block") {
+          selectGalleryEvent(allGalleries[0].id, false);
+        } else {
+          galleryData = sanitizeGallery(DEFAULT_GALLERY);
+          activeGalleryId = null;
+          renderAll();
+          fillAdminForm();
+        }
+
+        if (showSuccess) showToast("Eventos sincronizados.");
       } catch (error) {
         console.error(error);
+        allGalleries = [];
+        activeGalleryId = null;
         galleryData = sanitizeGallery(DEFAULT_GALLERY);
         renderAll();
         fillAdminForm();
-        showToast("Erro ao carregar a galeria. Usando dados padrão.", "error");
+        showToast("Erro ao carregar eventos. Verifique as regras do Firestore.", "error");
       }
     }
 
-    window.loadGallery = loadGallery;
+    window.loadAllGalleries = loadAllGalleries;
+    window.loadGallery = loadAllGalleries;
 
     function unlockGallery() {
       gate.classList.add("hidden");
       document.body.classList.remove("locked");
-      sessionStorage.setItem(GUEST_SESSION_KEY, "true");
+      if (activeGalleryId) sessionStorage.setItem(ACTIVE_GALLERY_SESSION_KEY, activeGalleryId);
     }
 
     gateForm.addEventListener("submit", (event) => {
       event.preventDefault();
+      const login = normalizeCredential(gateLogin.value);
       const pass = gatePass.value.trim();
-      const expected = String(galleryData.guestPassword || DEFAULT_GALLERY.guestPassword).trim();
 
-      if (pass === expected) {
-        unlockGallery();
+      if (!login || !pass) {
+        gateError.textContent = "Digite o login e a senha do evento.";
         return;
       }
 
-      gateError.textContent = "Senha incorreta. Confira a senha enviada pela equipe.";
+      const found = allGalleries.find((item) => {
+        return normalizeCredential(item.guestLogin) === login && String(item.guestPassword || "").trim() === pass;
+      });
+
+      if (found) {
+        selectGalleryEvent(found.id, true);
+        gateError.textContent = "";
+        return;
+      }
+
+      gateError.textContent = "Login ou senha incorretos. Confira os dados enviados pela equipe.";
       gatePass.select();
     });
 
@@ -1558,9 +1808,12 @@
         sessionStorage.setItem(ADMIN_SESSION_KEY, "true");
       }
 
-      fillAdminForm();
       document.getElementById("admin-panel").style.display = "block";
       document.body.classList.add("locked");
+
+      if (!allGalleries.length) await loadAllGalleries(false);
+      if (!activeGalleryId && allGalleries.length) selectGalleryEvent(allGalleries[0].id, false);
+      fillAdminForm();
     }
 
     function closeGalleryAdmin() {
@@ -1578,6 +1831,27 @@
     window.closeGalleryAdmin = closeGalleryAdmin;
     window.logoutGalleryAdmin = logoutGalleryAdmin;
 
+    function startNewGalleryEvent() {
+      isCreatingNewEvent = true;
+      activeGalleryId = null;
+      galleryData = sanitizeGallery({
+        ...cloneDefault(),
+        guestLogin: "",
+        guestPassword: "",
+        casal: "",
+        dataLocal: "",
+        descricao: "",
+        mediaType: "photo-video",
+        capa: "",
+        images: []
+      });
+      renderAll();
+      fillAdminForm();
+      setAdminStatus("Novo evento iniciado. Preencha login, senha e salve antes de subir fotos.");
+    }
+
+    window.startNewGalleryEvent = startNewGalleryEvent;
+
     function collectAccessesFromAdmin() {
       const items = JSON.parse(JSON.stringify(galleryData.accesses || DEFAULT_GALLERY.accesses));
       document.querySelectorAll("[data-access-index]").forEach((input) => {
@@ -1589,35 +1863,72 @@
       return items;
     }
 
-    async function saveGallerySettings() {
-      const btn = document.getElementById("saveGalleryBtn");
-      btn.disabled = true;
-      btn.textContent = "Salvando...";
-      setAdminStatus("Salvando dados da galeria...");
-
-      const payload = {
-        casal: document.getElementById("adm-casal").value.trim() || DEFAULT_GALLERY.casal,
-        dataLocal: document.getElementById("adm-data-local").value.trim() || DEFAULT_GALLERY.dataLocal,
-        guestPassword: document.getElementById("adm-senha").value.trim() || DEFAULT_GALLERY.guestPassword,
+    function buildPayloadFromAdmin(existingImages = []) {
+      return {
+        guestLogin: document.getElementById("adm-login").value.trim(),
+        casal: document.getElementById("adm-casal").value.trim() || "Evento BLPRODUÇÕES",
+        dataLocal: document.getElementById("adm-data-local").value.trim() || "Evento privado",
+        mediaType: normalizeMediaType(document.getElementById("adm-media-type").value),
+        guestPassword: document.getElementById("adm-senha").value.trim(),
         capa: document.getElementById("adm-capa").value.trim(),
         whatsapp: document.getElementById("adm-whatsapp").value.trim() || DEFAULT_GALLERY.whatsapp,
         descricao: document.getElementById("adm-descricao").value.trim() || DEFAULT_GALLERY.descricao,
         accesses: collectAccessesFromAdmin(),
-        images: galleryData.images || [],
+        images: existingImages,
         updatedAt: new Date()
       };
+    }
+
+    async function saveGallerySettings() {
+      const btn = document.getElementById("saveGalleryBtn");
+      btn.disabled = true;
+      btn.textContent = "Salvando...";
+      setAdminStatus("Salvando dados do evento...");
+
+      const payload = buildPayloadFromAdmin(galleryData.images || []);
+
+      if (!payload.guestLogin) {
+        setAdminStatus("Preencha o login dos convidados.", "error");
+        btn.disabled = false;
+        btn.textContent = "Salvar dados";
+        return;
+      }
+
+      if (!payload.guestPassword) {
+        setAdminStatus("Preencha a senha dos convidados.", "error");
+        btn.disabled = false;
+        btn.textContent = "Salvar dados";
+        return;
+      }
+
+      const duplicateLogin = allGalleries.find((item) => {
+        return item.id !== activeGalleryId && normalizeCredential(item.guestLogin) === normalizeCredential(payload.guestLogin);
+      });
+
+      if (duplicateLogin) {
+        setAdminStatus(`Já existe um evento usando o login "${payload.guestLogin}". Use outro login.`, "error");
+        btn.disabled = false;
+        btn.textContent = "Salvar dados";
+        return;
+      }
 
       try {
-        await setDoc(galleryRef, payload, { merge: true });
-        galleryData = sanitizeGallery(payload);
-        renderAll();
-        fillAdminForm();
-        showToast("Galeria salva com sucesso.");
-        setAdminStatus("Galeria salva com sucesso.", "success");
+        const docId = activeGalleryId || uniqueGalleryId(payload.guestLogin || payload.casal);
+        payload.createdAt = activeGalleryId ? galleryData.createdAt || new Date() : new Date();
+
+        await setDoc(doc(db, GALLERY_COLLECTION, docId), payload, { merge: true });
+        activeGalleryId = docId;
+        isCreatingNewEvent = false;
+        galleryData = sanitizeGallery(payload, docId);
+
+        await loadAllGalleries(false);
+        selectGalleryEvent(docId, false);
+        showToast("Evento salvo com sucesso.");
+        setAdminStatus("Evento salvo com sucesso.", "success");
       } catch (error) {
         console.error(error);
-        showToast("Erro ao salvar a galeria.", "error");
-        setAdminStatus("Erro ao salvar a galeria. Verifique as regras do Firestore.", "error");
+        showToast("Erro ao salvar o evento.", "error");
+        setAdminStatus("Erro ao salvar o evento. Verifique as regras do Firestore.", "error");
       } finally {
         btn.disabled = false;
         btn.textContent = "Salvar dados";
@@ -1628,12 +1939,13 @@
 
     async function uploadImages(files) {
       const uploadedUrls = [];
+      const folderId = activeGalleryId || slugify(galleryData.guestLogin || galleryData.casal || "evento");
 
       for (const file of files) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", UPLOAD_PRESET);
-        formData.append("folder", `blproducoes/${GALLERY_ID}`);
+        formData.append("folder", `blproducoes/${folderId}`);
 
         const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
           method: "POST",
@@ -1658,38 +1970,44 @@
       const files = Array.from(input.files || []);
       const btn = document.getElementById("uploadGalleryBtn");
 
+      if (!activeGalleryId) {
+        setAdminStatus("Salve o evento antes de subir prévias.", "error");
+        return;
+      }
+
       if (!files.length) {
-        setAdminStatus("Selecione pelo menos uma imagem.", "error");
+        setAdminStatus("Selecione pelo menos uma imagem de prévia.", "error");
         return;
       }
 
       btn.disabled = true;
-      btn.textContent = `Subindo ${files.length} foto(s)...`;
-      setAdminStatus("Subindo fotos para o Cloudinary...");
+      btn.textContent = `Subindo ${files.length} prévia(s)...`;
+      setAdminStatus(`Subindo prévias para o evento ${galleryData.casal}...`);
 
       try {
         const uploadedUrls = await uploadImages(files);
         const finalImages = [...(galleryData.images || []), ...uploadedUrls];
         const payload = {
           ...galleryData,
+          id: undefined,
           images: finalImages,
           updatedAt: new Date()
         };
 
-        await setDoc(galleryRef, payload, { merge: true });
-        galleryData = sanitizeGallery(payload);
+        await setDoc(activeGalleryRef(), payload, { merge: true });
+        galleryData = sanitizeGallery({ ...galleryData, images: finalImages, updatedAt: new Date() }, activeGalleryId);
         input.value = "";
-        renderAll();
-        fillAdminForm();
-        showToast("Fotos adicionadas à galeria.");
-        setAdminStatus("Fotos adicionadas com sucesso.", "success");
+        await loadAllGalleries(false);
+        selectGalleryEvent(activeGalleryId, false);
+        showToast("Prévias adicionadas ao evento.");
+        setAdminStatus("Prévias adicionadas com sucesso.", "success");
       } catch (error) {
         console.error(error);
-        showToast("Erro ao subir as fotos.", "error");
+        showToast("Erro ao subir as prévias.", "error");
         setAdminStatus("Erro no upload. Verifique o upload preset do Cloudinary e as regras do Firestore.", "error");
       } finally {
         btn.disabled = false;
-        btn.textContent = "Subir fotos";
+        btn.textContent = "Subir prévias";
       }
     }
 
@@ -1697,26 +2015,31 @@
 
     function clearGalleryFileInput() {
       document.getElementById("galleryFiles").value = "";
-      setAdminStatus("Seleção de fotos limpa.");
+      setAdminStatus("Seleção de prévias limpa.");
     }
 
     window.clearGalleryFileInput = clearGalleryFileInput;
 
     async function deleteGalleryImage(encodedUrl) {
+      if (!activeGalleryId) {
+        setAdminStatus("Selecione um evento antes de remover prévias.", "error");
+        return;
+      }
+
       const imageUrl = decodeURIComponent(encodedUrl);
-      if (!confirm("Tem certeza que deseja remover esta foto da galeria?")) return;
+      if (!confirm("Tem certeza que deseja remover esta prévia da galeria deste evento?")) return;
 
       try {
         const finalImages = (galleryData.images || []).filter((img) => img !== imageUrl);
-        await updateDoc(galleryRef, { images: finalImages, updatedAt: new Date() });
+        await updateDoc(activeGalleryRef(), { images: finalImages, updatedAt: new Date() });
         galleryData.images = finalImages;
-        renderAll();
-        fillAdminForm();
-        showToast("Foto removida da galeria.");
+        await loadAllGalleries(false);
+        selectGalleryEvent(activeGalleryId, false);
+        showToast("Prévia removida da galeria.");
       } catch (error) {
         console.error(error);
-        showToast("Erro ao remover a foto.", "error");
-        setAdminStatus("Erro ao remover a foto. Verifique as regras do Firestore.", "error");
+        showToast("Erro ao remover a prévia.", "error");
+        setAdminStatus("Erro ao remover a prévia. Verifique as regras do Firestore.", "error");
       }
     }
 
@@ -1733,7 +2056,7 @@
       if (event.key === "ArrowLeft") prevLightbox();
     });
 
-    window.addEventListener("load", () => loadGallery(false));
+    window.addEventListener("load", () => loadAllGalleries(false));
   </script>
 </body>
 </html>
