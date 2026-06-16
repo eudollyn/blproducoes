@@ -1208,7 +1208,7 @@
 
         <div class="admin-box">
           <h3>Eventos cadastrados</h3>
-          <p class="section-copy" style="font-size:0.82rem; margin-bottom:12px;">Selecione um evento para editar dados, configurar os links corretos da cobertura e subir prévias/capas quando necessário.</p>
+          <p class="section-copy" style="font-size:0.82rem; margin-bottom:12px;">Selecione um evento para editar dados, subir fotos e ajustar os links de entrega.</p>
           <div id="adminEventList" class="event-admin-list"></div>
 
           <h3 id="adminImagesTitle" style="margin-top:18px;">Prévias publicadas</h3>
@@ -1232,6 +1232,8 @@
       <div class="nav-actions">
         <a href="index.html" class="btn btn-ghost">Início</a>
         <a href="#links" class="btn btn-ghost">Acessos</a>
+        <button type="button" class="btn btn-ghost" onclick="openGalleryAdmin()">Admin</button>
+        <button type="button" class="btn btn-secondary" onclick="logoutGuestGallery()">Sair</button>
         <a href="https://wa.me/5531985534292" target="_blank" class="btn btn-primary" id="navWhatsapp">Suporte</a>
       </div>
     </div>
@@ -1306,6 +1308,8 @@
 
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <a href="https://wa.me/5531985534292" target="_blank" class="btn btn-primary" id="helpWhatsapp">WhatsApp</a>
+          <button type="button" class="btn btn-secondary" onclick="openGalleryAdmin()">Área admin</button>
+          <button type="button" class="btn btn-secondary" onclick="logoutGuestGallery()">Trocar acesso</button>
           <a href="index.html" class="btn btn-secondary">Voltar ao site</a>
         </div>
       </div>
@@ -1630,15 +1634,9 @@
         link.href = galleryData.whatsapp || DEFAULT_GALLERY.whatsapp;
       });
 
-      accessTitle.textContent = videoOnly
-        ? "Vídeos liberados no Drive."
-        : photoOnly
-        ? "Fotos liberadas no Drive."
-        : "Pastas liberadas no Drive.";
+      accessTitle.textContent = videoOnly ? "Vídeos liberados no Drive." : "Pastas liberadas no Drive.";
       accessCopy.textContent = videoOnly
         ? "Os botões abaixo abrem somente as pastas de vídeo deste evento. Não há pasta de fotos para esta cobertura."
-        : photoOnly
-        ? "Os botões abaixo abrem somente as pastas de fotos deste evento. Não há pasta de vídeos para esta cobertura."
         : "As prévias selecionadas podem aparecer abaixo dentro do site. Os botões abaixo abrem apenas as pastas de entrega do evento acessado com esse login e senha.";
 
       previewSection.style.display = videoOnly && !hasPreviews ? "none" : "block";
@@ -1922,6 +1920,25 @@
       document.body.classList.remove("locked");
       if (activeGalleryId) sessionStorage.setItem(ACTIVE_GALLERY_SESSION_KEY, activeGalleryId);
     }
+
+    function logoutGuestGallery() {
+      sessionStorage.removeItem(ACTIVE_GALLERY_SESSION_KEY);
+      activeGalleryId = null;
+      galleryData = sanitizeGallery(DEFAULT_GALLERY);
+      isCreatingNewEvent = false;
+      gate.classList.remove("hidden");
+      document.getElementById("admin-panel").style.display = "none";
+      document.body.classList.add("locked");
+      gateLogin.value = "";
+      gatePass.value = "";
+      gateError.textContent = "";
+      renderAll();
+      fillAdminForm();
+      setTimeout(() => gateLogin.focus(), 80);
+      showToast("Você saiu da galeria. Entre com outro evento ou abra a área administrativa.");
+    }
+
+    window.logoutGuestGallery = logoutGuestGallery;
 
     gateForm.addEventListener("submit", (event) => {
       event.preventDefault();
