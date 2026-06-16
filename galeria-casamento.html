@@ -204,6 +204,20 @@
       letter-spacing: 2px;
     }
 
+    .btn-danger {
+      background: rgba(255,70,70,0.09);
+      color: #ffb5b5;
+      border: 1px solid rgba(255,120,120,0.28);
+      padding: 14px 22px;
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    .btn-danger:hover {
+      background: rgba(255,70,70,0.16);
+      border-color: rgba(255,150,150,0.42);
+    }
+
     .hero {
       min-height: 100vh;
       display: flex;
@@ -665,21 +679,6 @@
       line-height: 1.5;
     }
 
-    .gate-admin-link {
-      margin-top: 14px;
-      background: transparent;
-      border: 0;
-      color: var(--muted-2);
-      font-family: inherit;
-      font-size: 0.62rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: color 0.24s var(--ease);
-    }
-
-    .gate-admin-link:hover { color: #fff; }
-
     .lightbox {
       position: fixed;
       inset: 0;
@@ -862,7 +861,55 @@
       font-size: 0.62rem;
     }
 
+    .admin-hint {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.6;
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.025);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
 
+    .admin-hint strong {
+      color: #fff;
+    }
+
+    .event-admin-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .event-delete-btn {
+      width: 42px;
+      border: 1px solid rgba(255,120,120,0.22);
+      background: rgba(255,70,70,0.08);
+      color: #ffb5b5;
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.22s var(--ease);
+    }
+
+    .event-delete-btn:hover {
+      border-color: rgba(255,150,150,0.45);
+      background: rgba(255,70,70,0.16);
+      transform: translateY(-1px);
+    }
+
+    .event-delete-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .event-admin-item .media-label {
+      color: #fff;
+      opacity: 0.85;
+    }
 
     .event-admin-list {
       display: grid;
@@ -1124,7 +1171,7 @@
             <input class="full" type="text" id="adm-login" placeholder="Login dos convidados. Ex: samuel e lydia">
             <input class="full" type="text" id="adm-casal" placeholder="Nome dos noivos / nome do evento">
             <input class="full" type="text" id="adm-data-local" placeholder="Ex: Casamento • Belo Horizonte/MG • 2026">
-            <select class="full" id="adm-media-type" aria-label="Tipo de cobertura">
+            <select class="full" id="adm-media-type" aria-label="Tipo de cobertura" onchange="handleMediaTypeChange(this.value)">
               <option value="photo-video">Cobertura com fotos e vídeos</option>
               <option value="video">Somente vídeos / filmmaker</option>
               <option value="photo">Somente fotos</option>
@@ -1135,11 +1182,16 @@
             <textarea class="full" id="adm-descricao" placeholder="Descrição da galeria"></textarea>
           </div>
 
+          <div class="admin-hint" id="mediaTypeHint">
+            Escolha o tipo de cobertura para liberar somente os campos corretos de entrega deste evento.
+          </div>
+
           <div class="access-admin-list" id="accessAdminList"></div>
 
           <div class="admin-actions">
             <button class="btn btn-primary" id="saveGalleryBtn" onclick="saveGallerySettings()">Salvar dados</button>
             <button class="btn btn-secondary" onclick="fillAdminForm()">Recarregar campos</button>
+            <button class="btn btn-danger" id="deleteGalleryBtn" onclick="deleteGalleryEvent()">Excluir evento</button>
           </div>
 
           <div class="file-input-wrap">
@@ -1156,7 +1208,7 @@
 
         <div class="admin-box">
           <h3>Eventos cadastrados</h3>
-          <p class="section-copy" style="font-size:0.82rem; margin-bottom:12px;">Selecione um evento para editar dados, subir fotos e ajustar os links de entrega.</p>
+          <p class="section-copy" style="font-size:0.82rem; margin-bottom:12px;">Selecione um evento para editar dados, configurar os links corretos da cobertura e subir prévias/capas quando necessário.</p>
           <div id="adminEventList" class="event-admin-list"></div>
 
           <h3 id="adminImagesTitle" style="margin-top:18px;">Prévias publicadas</h3>
@@ -1280,7 +1332,8 @@
       doc,
       getDocs,
       setDoc,
-      updateDoc
+      updateDoc,
+      deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     /*
@@ -1371,6 +1424,7 @@
     const uploadTitle = document.getElementById("uploadTitle");
     const adminImagesTitle = document.getElementById("adminImagesTitle");
     const adminImagesCopy = document.getElementById("adminImagesCopy");
+    const mediaTypeHint = document.getElementById("mediaTypeHint");
 
     function cloneDefault() {
       return JSON.parse(JSON.stringify(DEFAULT_GALLERY));
@@ -1421,6 +1475,96 @@
       return normalizeMediaType(galleryData.mediaType) === "photo";
     }
 
+    function getMediaLabel(mediaType = "photo-video") {
+      const normalized = normalizeMediaType(mediaType);
+      if (normalized === "video") return "Somente vídeos / filmmaker";
+      if (normalized === "photo") return "Somente fotos";
+      return "Fotos e vídeos";
+    }
+
+    function getMediaHint(mediaType = "photo-video") {
+      const normalized = normalizeMediaType(mediaType);
+      if (normalized === "video") {
+        return "<strong>Evento somente vídeos:</strong> o painel mostra apenas campos de vídeo e download. Os vídeos pesados devem ficar no Drive; aqui você cola o link da pasta/arquivo liberado.";
+      }
+      if (normalized === "photo") {
+        return "<strong>Evento somente fotos:</strong> o painel mostra apenas campos de fotos em alta e pacote final. A área de upload abaixo serve para publicar prévias dentro do site.";
+      }
+      return "<strong>Evento com fotos e vídeos:</strong> o painel mostra campos separados para fotos em alta, vídeos e pacote final no Drive.";
+    }
+
+    function accessTemplatesByMediaType(mediaType = "photo-video") {
+      const normalized = normalizeMediaType(mediaType);
+      const templates = {
+        "video": [
+          {
+            tipo: "Vídeos",
+            titulo: "Vídeos do casamento",
+            texto: "Abra a pasta compartilhada no Drive com os vídeos editados e materiais liberados para este evento.",
+            link: ""
+          },
+          {
+            tipo: "Download final",
+            titulo: "Baixar vídeos em alta",
+            texto: "Baixe a pasta ou arquivo final com os vídeos em alta qualidade.",
+            link: ""
+          }
+        ],
+        "photo": [
+          {
+            tipo: "Fotos em alta",
+            titulo: "Fotos em alta no Drive",
+            texto: "Abra a pasta compartilhada no Drive com as fotos finais em alta resolução.",
+            link: ""
+          },
+          {
+            tipo: "Pacote completo",
+            titulo: "Download final no Drive",
+            texto: "Baixe a pasta ou pacote final com as fotos organizadas em alta qualidade.",
+            link: ""
+          }
+        ],
+        "photo-video": [
+          {
+            tipo: "Fotos em alta",
+            titulo: "Fotos em alta no Drive",
+            texto: "Abra a pasta compartilhada no Drive com as fotos finais em alta resolução.",
+            link: ""
+          },
+          {
+            tipo: "Vídeos",
+            titulo: "Vídeos do evento",
+            texto: "Abra a pasta compartilhada no Drive com os vídeos editados e materiais liberados para este evento.",
+            link: ""
+          },
+          {
+            tipo: "Pacote completo",
+            titulo: "Download final no Drive",
+            texto: "Baixe a pasta ou o pacote final com fotos e vídeos organizados em alta qualidade.",
+            link: ""
+          }
+        ]
+      };
+      return JSON.parse(JSON.stringify(templates[normalized] || templates["photo-video"]));
+    }
+
+    function normalizeAccessesForMediaType(accesses = [], mediaType = "photo-video") {
+      const templates = accessTemplatesByMediaType(mediaType);
+      const source = Array.isArray(accesses) ? accesses : [];
+
+      return templates.map((template, index) => {
+        const sameType = source.find((item) => normalizeCredential(item?.tipo) === normalizeCredential(template.tipo));
+        const sameIndex = source[index];
+        const chosen = sameType || sameIndex || {};
+        return {
+          tipo: chosen.tipo || template.tipo,
+          titulo: chosen.titulo || template.titulo,
+          texto: chosen.texto || template.texto,
+          link: chosen.link || template.link
+        };
+      });
+    }
+
     function hasValidLink(link = "") {
       const clean = String(link || "").trim();
       return clean && clean !== "#";
@@ -1428,22 +1572,18 @@
 
     function sanitizeGallery(data = {}, id = null) {
       const defaults = cloneDefault();
-      const accesses = Array.isArray(data.accesses) && data.accesses.length
+      const mediaType = normalizeMediaType(data.mediaType || defaults.mediaType);
+      const rawAccesses = Array.isArray(data.accesses) && data.accesses.length
         ? data.accesses
-        : defaults.accesses;
+        : accessTemplatesByMediaType(mediaType);
 
       return {
         ...defaults,
         ...data,
         id,
         guestLogin: data.guestLogin || data.login || defaults.guestLogin,
-        mediaType: normalizeMediaType(data.mediaType || defaults.mediaType),
-        accesses: accesses.map((item, index) => ({
-          tipo: item.tipo ?? defaults.accesses[index]?.tipo ?? "Acesso",
-          titulo: item.titulo ?? defaults.accesses[index]?.titulo ?? "Link da galeria",
-          texto: item.texto ?? defaults.accesses[index]?.texto ?? "Abra o link liberado pela equipe.",
-          link: item.link ?? defaults.accesses[index]?.link ?? ""
-        })),
+        mediaType,
+        accesses: normalizeAccessesForMediaType(rawAccesses, mediaType),
         images: Array.isArray(data.images) ? data.images.filter(Boolean) : []
       };
     }
@@ -1490,9 +1630,15 @@
         link.href = galleryData.whatsapp || DEFAULT_GALLERY.whatsapp;
       });
 
-      accessTitle.textContent = videoOnly ? "Vídeos liberados no Drive." : "Pastas liberadas no Drive.";
+      accessTitle.textContent = videoOnly
+        ? "Vídeos liberados no Drive."
+        : photoOnly
+        ? "Fotos liberadas no Drive."
+        : "Pastas liberadas no Drive.";
       accessCopy.textContent = videoOnly
         ? "Os botões abaixo abrem somente as pastas de vídeo deste evento. Não há pasta de fotos para esta cobertura."
+        : photoOnly
+        ? "Os botões abaixo abrem somente as pastas de fotos deste evento. Não há pasta de vídeos para esta cobertura."
         : "As prévias selecionadas podem aparecer abaixo dentro do site. Os botões abaixo abrem apenas as pastas de entrega do evento acessado com esse login e senha.";
 
       previewSection.style.display = videoOnly && !hasPreviews ? "none" : "block";
@@ -1526,7 +1672,8 @@
     function renderAccess() {
       accessGrid.innerHTML = "";
 
-      const validAccesses = (galleryData.accesses || []).filter((item) => hasValidLink(item.link));
+      const allowedAccesses = normalizeAccessesForMediaType(galleryData.accesses || [], galleryData.mediaType);
+      const validAccesses = allowedAccesses.filter((item) => hasValidLink(item.link));
 
       if (!validAccesses.length) {
         accessGrid.innerHTML = `
@@ -1614,6 +1761,9 @@
       }
 
       allGalleries.forEach((eventItem) => {
+        const row = document.createElement("div");
+        row.className = "event-admin-row";
+
         const button = document.createElement("button");
         button.type = "button";
         button.className = `event-admin-item ${eventItem.id === activeGalleryId ? "active" : ""}`;
@@ -1622,9 +1772,23 @@
           <strong>${eventItem.casal || "Evento sem nome"}</strong>
           <span>Login: ${eventItem.guestLogin || "não definido"}</span>
           <span>${eventItem.dataLocal || "Sem data/local"}</span>
+          <span class="media-label">Tipo: ${getMediaLabel(eventItem.mediaType)}</span>
           <span>${(eventItem.images || []).length} prévia(s)</span>
         `;
-        adminEventList.appendChild(button);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "event-delete-btn";
+        deleteButton.title = "Excluir evento";
+        deleteButton.innerHTML = "&times;";
+        deleteButton.onclick = (event) => {
+          event.stopPropagation();
+          deleteGalleryEvent(eventItem.id);
+        };
+
+        row.appendChild(button);
+        row.appendChild(deleteButton);
+        adminEventList.appendChild(row);
       });
     }
 
@@ -1639,12 +1803,15 @@
     function fillAccessAdminList() {
       accessAdminList.innerHTML = "";
 
+      galleryData.accesses = normalizeAccessesForMediaType(galleryData.accesses, galleryData.mediaType);
+      mediaTypeHint.innerHTML = getMediaHint(galleryData.mediaType);
+
       galleryData.accesses.forEach((item, index) => {
         const box = document.createElement("div");
         box.className = "access-admin-item";
         box.innerHTML = `
-          <small>Link de entrega ${index + 1}</small>
-          <input type="text" data-access-field="tipo" data-access-index="${index}" placeholder="Tipo (ex: Vídeos, Pacote completo, Fotos em alta)" value="${item.tipo || ''}">
+          <small>${item.tipo}</small>
+          <input type="text" data-access-field="tipo" data-access-index="${index}" placeholder="Tipo do acesso" value="${item.tipo || ''}">
           <input type="text" data-access-field="titulo" data-access-index="${index}" placeholder="Título do botão" value="${item.titulo || ''}">
           <textarea data-access-field="texto" data-access-index="${index}" placeholder="Texto explicando o que tem nessa pasta">${item.texto || ''}</textarea>
           <input type="text" data-access-field="link" data-access-index="${index}" placeholder="Link da pasta compartilhada no Drive" value="${item.link || ''}">
@@ -1666,12 +1833,28 @@
       fillAccessAdminList();
       renderAdminImages();
       renderAdminEventList();
+      const deleteBtn = document.getElementById("deleteGalleryBtn");
+      if (deleteBtn) deleteBtn.disabled = !activeGalleryId;
       setAdminStatus(activeGalleryId
-        ? `Editando evento: ${galleryData.casal}.`
-        : "Novo evento: preencha login, senha e salve antes de subir fotos.");
+        ? `Editando evento: ${galleryData.casal}. Tipo: ${getMediaLabel(galleryData.mediaType)}.`
+        : "Novo evento: preencha login, senha e salve antes de subir prévias.");
     }
 
     window.fillAdminForm = fillAdminForm;
+
+    function handleMediaTypeChange(nextMediaType) {
+      const normalized = normalizeMediaType(nextMediaType);
+      galleryData.mediaType = normalized;
+      galleryData.accesses = accessTemplatesByMediaType(normalized);
+      fillAccessAdminList();
+      fillEvent();
+      renderAccess();
+      renderPreviews();
+      renderAdminImages();
+      setAdminStatus(`Tipo de cobertura alterado para: ${getMediaLabel(normalized)}. Revise os links de entrega e clique em Salvar dados.`);
+    }
+
+    window.handleMediaTypeChange = handleMediaTypeChange;
 
     function selectGalleryEvent(id, shouldUnlock = false) {
       const found = allGalleries.find((item) => item.id === id);
@@ -1869,14 +2052,15 @@
     window.startNewGalleryEvent = startNewGalleryEvent;
 
     function collectAccessesFromAdmin() {
-      const items = JSON.parse(JSON.stringify(galleryData.accesses || DEFAULT_GALLERY.accesses));
+      const mediaType = normalizeMediaType(document.getElementById("adm-media-type").value);
+      const items = accessTemplatesByMediaType(mediaType);
       document.querySelectorAll("[data-access-index]").forEach((input) => {
         const index = Number(input.dataset.accessIndex);
         const field = input.dataset.accessField;
         if (!items[index]) items[index] = { tipo: "Acesso", titulo: "", texto: "", link: "" };
         items[index][field] = input.value.trim();
       });
-      return items;
+      return normalizeAccessesForMediaType(items, mediaType);
     }
 
     function buildPayloadFromAdmin(existingImages = []) {
@@ -2060,6 +2244,53 @@
     }
 
     window.deleteGalleryImage = deleteGalleryImage;
+
+    async function deleteGalleryEvent(id = activeGalleryId) {
+      const targetId = id || activeGalleryId;
+      if (!targetId) {
+        setAdminStatus("Selecione um evento salvo para excluir.", "error");
+        return;
+      }
+
+      const target = allGalleries.find((item) => item.id === targetId) || galleryData;
+      const eventName = target.casal || "este evento";
+      const firstConfirm = confirm(`Tem certeza que deseja excluir o evento "${eventName}"?
+
+Isso remove o evento do Firestore e ele não aparecerá mais para convidados.`);
+      if (!firstConfirm) return;
+
+      const typed = prompt(`Para confirmar, digite EXCLUIR`);
+      if (typed !== "EXCLUIR") {
+        setAdminStatus("Exclusão cancelada. A confirmação não foi digitada corretamente.");
+        return;
+      }
+
+      try {
+        await deleteDoc(doc(db, GALLERY_COLLECTION, targetId));
+        showToast("Evento excluído com sucesso.");
+        if (sessionStorage.getItem(ACTIVE_GALLERY_SESSION_KEY) === targetId) {
+          sessionStorage.removeItem(ACTIVE_GALLERY_SESSION_KEY);
+        }
+
+        activeGalleryId = null;
+        isCreatingNewEvent = false;
+        await loadAllGalleries(false);
+
+        if (allGalleries.length) {
+          selectGalleryEvent(allGalleries[0].id, false);
+          setAdminStatus("Evento excluído. Outro evento foi selecionado automaticamente.", "success");
+        } else {
+          startNewGalleryEvent();
+          setAdminStatus("Evento excluído. Nenhum evento cadastrado; crie um novo para liberar acesso aos convidados.", "success");
+        }
+      } catch (error) {
+        console.error(error);
+        showToast("Erro ao excluir o evento.", "error");
+        setAdminStatus("Erro ao excluir o evento. Verifique as regras do Firestore.", "error");
+      }
+    }
+
+    window.deleteGalleryEvent = deleteGalleryEvent;
 
     document.addEventListener("keydown", (event) => {
       const isLightboxOpen = document.getElementById("lightbox").classList.contains("open");
