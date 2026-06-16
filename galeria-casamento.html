@@ -2162,21 +2162,20 @@
         const formData = new FormData();
         formData.append("file", file);
         formData.append("upload_preset", UPLOAD_PRESET);
-        formData.append("asset_folder", `blproducoes/${folderId}`);
+        formData.append("folder", `blproducoes/${folderId}`);
 
         const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
           method: "POST",
           body: formData
         });
 
-        const json = await res.json().catch(() => ({}));
+        const json = await res.json();
 
-        if (res.ok && json.secure_url) {
+        if (json.secure_url) {
           uploadedUrls.push(json.secure_url);
         } else {
-          const message = json?.error?.message || `Falha no upload de uma das imagens. HTTP ${res.status}`;
-          console.error("Cloudinary upload error:", json);
-          throw new Error(message);
+          console.error(json);
+          throw new Error("Falha no upload de uma das imagens.");
         }
       }
 
@@ -2205,15 +2204,12 @@
       try {
         const uploadedUrls = await uploadImages(files);
         const finalImages = [...(galleryData.images || []), ...uploadedUrls];
-        const payload = {
-          ...galleryData,
-          id: undefined,
-          images: finalImages,
-          updatedAt: new Date()
-        };
+        const updatedAt = new Date();
 
-        await setDoc(activeGalleryRef(), payload, { merge: true });
-        galleryData = sanitizeGallery({ ...galleryData, images: finalImages, updatedAt: new Date() }, activeGalleryId);
+        // Atualiza somente os campos necessários. Não enviamos o campo "id" ao Firestore,
+        // porque ele é usado apenas no front-end e pode ficar undefined em alguns fluxos.
+        await updateDoc(activeGalleryRef(), { images: finalImages, updatedAt });
+        galleryData = sanitizeGallery({ ...galleryData, images: finalImages, updatedAt }, activeGalleryId);
         input.value = "";
         await loadAllGalleries(false);
         selectGalleryEvent(activeGalleryId, false);
@@ -2221,9 +2217,8 @@
         setAdminStatus("Prévias adicionadas com sucesso.", "success");
       } catch (error) {
         console.error(error);
-        const details = error?.message ? ` Detalhe: ${error.message}` : "";
         showToast("Erro ao subir as prévias.", "error");
-        setAdminStatus(`Erro no upload.${details}`, "error");
+        setAdminStatus("Erro no upload. Verifique o upload preset do Cloudinary e as regras do Firestore.", "error");
       } finally {
         btn.disabled = false;
         btn.textContent = "Subir prévias";
