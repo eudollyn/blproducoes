@@ -177,8 +177,9 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      justify-content: flex-end;
       min-width: 0;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
     }
 
     .btn {
@@ -1124,10 +1125,109 @@
   border-radius: 10px;
 }
 
+
+
+    .gallery-teaser {
+      padding: 8vh 0;
+    }
+
+    .gallery-panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 32%),
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018));
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .gallery-panel::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(255,255,255,0.055);
+      border-radius: 22px;
+      pointer-events: none;
+    }
+
+    .gallery-panel-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 0.78fr;
+      gap: 24px;
+      align-items: stretch;
+      padding: 30px;
+      min-width: 0;
+    }
+
+    .gallery-panel-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .gallery-panel-copy p {
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 720px;
+      font-size: 0.94rem;
+      margin-bottom: 22px;
+    }
+
+    .gallery-panel-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .gallery-mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .gallery-mini-card {
+      min-height: 150px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(0,0,0,0.24);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+
+    .gallery-mini-card small {
+      color: var(--muted-2);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.58rem;
+    }
+
+    .gallery-mini-card strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 0.94rem;
+      line-height: 1.45;
+    }
+
+    .gallery-mini-card span {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
     @media (max-width: 1100px) {
       .hero-grid,
       .admin-layout,
-      .cta-panel {
+      .cta-panel,
+      .gallery-panel-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1454,6 +1554,47 @@
         line-height: 1.6;
       }
 
+
+
+      .gallery-teaser {
+        padding: 34px 0;
+      }
+
+      .gallery-panel {
+        border-radius: 20px;
+      }
+
+      .gallery-panel::before {
+        inset: 10px;
+        border-radius: 16px;
+      }
+
+      .gallery-panel-grid {
+        padding: 18px;
+        gap: 16px;
+      }
+
+      .gallery-panel-copy p {
+        font-size: 0.82rem;
+        line-height: 1.6;
+        margin-bottom: 16px;
+      }
+
+      .gallery-panel-actions .btn {
+        flex: 1 1 100%;
+      }
+
+      .gallery-mini-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-mini-card {
+        min-height: 126px;
+        border-radius: 16px;
+        padding: 16px;
+      }
+
+
       footer {
         padding: 40px 0 90px;
       }
@@ -1649,7 +1790,7 @@
         <a href="#trabalhos" class="btn btn-ghost">Portfólio</a>
         <a href="quem-somos.html" class="btn btn-ghost">Quem somos</a>
         <a href="https://wa.me/5531985534292" target="_blank" class="btn btn-primary">Reservar</a>
-        <a href="galeria-casamento.html">Galeria</a>
+        <a href="galeria-casamento.html" class="btn btn-ghost">Galeria</a>
       </div>
     </div>
   </header>
@@ -1780,6 +1921,41 @@
       </div>
     </section>
 
+
+    <section class="container gallery-teaser" id="galeria-privada">
+      <div class="gallery-panel">
+        <div class="gallery-panel-grid">
+          <div class="gallery-panel-copy">
+            <span class="section-tag">Entrega privada</span>
+            <h2 class="section-title" style="margin-bottom:12px;">Galeria digital para eventos.</h2>
+            <p>Uma página reservada para liberar fotos, vídeos e links de download com a identidade da BLPRODUÇÕES. Ideal para casamentos, ensaios, eventos e entregas fechadas aos convidados.</p>
+            <div class="gallery-panel-actions">
+              <a href="galeria-casamento.html" class="btn btn-primary">Abrir galeria</a>
+              <a href="https://wa.me/5531985534292" target="_blank" class="btn btn-secondary">Solicitar acesso</a>
+            </div>
+          </div>
+
+          <div class="gallery-mini-grid">
+            <div class="gallery-mini-card">
+              <div>
+                <small>Privado</small>
+                <strong>Acesso com senha simples para convidados.</strong>
+              </div>
+              <span>Organiza a entrega sem expor tudo diretamente na home.</span>
+            </div>
+
+            <div class="gallery-mini-card">
+              <div>
+                <small>Fotos e vídeos</small>
+                <strong>Links para álbum, vídeos e download em alta.</strong>
+              </div>
+              <span>Compatível com Google Photos, Drive ou links externos.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="container cta-final">
       <div class="cta-panel">
         <div>
@@ -1801,6 +1977,7 @@
       <a href="https://www.instagram.com/blproducoe.s" target="_blank" class="foot-link">Instagram</a>
       <a href="https://wa.me/5531985534292" target="_blank" class="foot-link">WhatsApp</a>
       <a href="quem-somos.html" class="foot-link">Quem somos</a>
+      <a href="galeria-casamento.html" class="foot-link">Galeria</a>
     </div>
     <span class="copyright" onclick="openAdminPortal()">BLPRODUÇÕES © 2026 // ACESSO PRIVADO</span>
   </footer>
