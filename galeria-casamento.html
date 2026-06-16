@@ -665,6 +665,21 @@
       line-height: 1.5;
     }
 
+    .gate-admin-link {
+      margin-top: 14px;
+      background: transparent;
+      border: 0;
+      color: var(--muted-2);
+      font-family: inherit;
+      font-size: 0.62rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.24s var(--ease);
+    }
+
+    .gate-admin-link:hover { color: #fff; }
+
     .lightbox {
       position: fixed;
       inset: 0;
@@ -738,7 +753,7 @@
     #admin-panel {
       position: fixed;
       inset: 0;
-      z-index: 5000;
+      z-index: 9500;
       display: none;
       overflow-y: auto;
       overflow-x: hidden;
@@ -1072,6 +1087,7 @@
         <button class="btn btn-primary" type="submit">Entrar na galeria</button>
         <div class="gate-error" id="gateError"></div>
       </form>
+      <button type="button" class="gate-admin-link" onclick="openGalleryAdmin()">Área administrativa</button>
     </div>
   </div>
 
