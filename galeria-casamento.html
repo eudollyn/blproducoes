@@ -11,7 +11,7 @@
 
   <meta name="description" content="Galeria privada de fotos e vídeos por BLPRODUÇÕES.">
   <meta property="og:title" content="Galeria Privada | BLPRODUÇÕES">
-  <meta property="og:description" content="Fotos, vídeos e downloads do evento em uma experiência privada.">
+  <meta property="og:description" content="Galeria privada com prévias no site e entrega final por pastas compartilhadas no Drive.">
   <meta property="og:image" content="logo.png">
   <meta property="og:type" content="website">
 
@@ -1021,7 +1021,7 @@
       <div class="gate-logo"><img src="logo.png" alt="BLPRODUÇÕES"></div>
       <span class="section-tag">Galeria privada</span>
       <h2>Acesso dos convidados.</h2>
-      <p>Digite a senha enviada pela equipe da BLPRODUÇÕES para liberar as fotos, vídeos e links de download.</p>
+      <p>Digite a senha enviada pela equipe da BLPRODUÇÕES para liberar a galeria do site e os links das pastas compartilhadas.</p>
       <form class="gate-form" id="gateForm">
         <input type="password" id="gatePass" placeholder="Digite a senha" autocomplete="off">
         <button class="btn btn-primary" type="submit">Entrar na galeria</button>
@@ -1107,7 +1107,7 @@
 
       <div class="nav-actions">
         <a href="index.html" class="btn btn-ghost">Início</a>
-        <a href="#links" class="btn btn-ghost">Acessos</a>
+        <a href="#links" class="btn btn-ghost">Entregas</a>
         <a href="https://wa.me/5531985534292" target="_blank" class="btn btn-primary" id="navWhatsapp">Suporte</a>
       </div>
     </div>
@@ -1122,11 +1122,11 @@
           <h1>Digital</h1>
 
           <p class="hero-description" id="heroDescription">
-            Fotos, vídeos e downloads do evento em uma experiência privada, simples e elegante para convidados.
+            Fotos selecionadas no site e entrega final por pastas compartilhadas no Drive, em uma experiência privada, simples e elegante para convidados.
           </p>
 
           <div class="hero-cta">
-            <a href="#links" class="btn btn-primary">Ver acessos</a>
+            <a href="#links" class="btn btn-primary">Ver entregas</a>
             <a href="#previas" class="btn btn-secondary">Ver fotos</a>
           </div>
         </div>
@@ -1152,9 +1152,9 @@
     </div>
 
     <section class="container access-section" id="links">
-      <span class="section-tag">Acessos do evento</span>
-      <h2 class="section-title">Fotos, vídeos e arquivos.</h2>
-      <p class="section-copy">Use os botões abaixo para abrir o álbum, assistir aos vídeos e baixar os arquivos em alta qualidade.</p>
+      <span class="section-tag">Links de entrega</span>
+      <h2 class="section-title">Pastas liberadas no Drive.</h2>
+      <p class="section-copy">As fotos selecionadas aparecem abaixo dentro do site. Use estes botões apenas para abrir as pastas compartilhadas de entrega, como fotos em alta, vídeos e pacote completo.</p>
 
       <div class="access-grid" id="accessGrid"></div>
     </section>
@@ -1164,9 +1164,9 @@
         <div>
           <span class="section-tag">Galeria visual</span>
           <h2 class="section-title" style="margin-bottom:10px;">Momentos publicados.</h2>
-          <p class="section-copy">As fotos abaixo são carregadas direto do banco de dados da galeria. Clique em uma imagem para ampliar.</p>
+          <p class="section-copy">Estas são as fotos selecionadas para visualização dentro do site. Para arquivos completos em alta qualidade, use as pastas do Drive acima.</p>
         </div>
-        <a href="#links" class="btn btn-secondary">Abrir links</a>
+        <a href="#links" class="btn btn-secondary">Abrir entregas</a>
       </div>
 
       <div class="preview-grid" id="previewGrid"></div>
@@ -1177,7 +1177,7 @@
         <div>
           <span class="section-tag">Precisa de ajuda?</span>
           <h2 class="section-title" style="margin-bottom:12px;">Fale com a BLPRODUÇÕES.</h2>
-          <p>Se algum link não abrir ou se você precisar de ajuda para baixar os arquivos, envie uma mensagem para a equipe.</p>
+          <p>Se alguma pasta do Drive não abrir ou se você precisar de ajuda para baixar os arquivos, envie uma mensagem para a equipe.</p>
         </div>
 
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -1246,21 +1246,21 @@
       whatsapp: "https://wa.me/5531985534292?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20a%20galeria%20do%20casamento.",
       accesses: [
         {
-          tipo: "Fotos",
-          titulo: "Álbum completo",
-          texto: "Abra a seleção completa de fotos liberada para os convidados.",
-          link: "https://photos.google.com/"
+          tipo: "Fotos em alta",
+          titulo: "Fotos em alta no Drive",
+          texto: "Abra a pasta compartilhada no Drive com as fotos em alta qualidade liberadas para os convidados.",
+          link: "https://drive.google.com/"
         },
         {
           tipo: "Vídeos",
           titulo: "Vídeos do casamento",
-          texto: "Assista aos vídeos editados e materiais liberados pela BLPRODUÇÕES.",
+          texto: "Abra a pasta compartilhada no Drive com os vídeos editados e materiais liberados.",
           link: "https://drive.google.com/"
         },
         {
-          tipo: "Download",
-          titulo: "Arquivos em alta",
-          texto: "Baixe os arquivos finais em alta qualidade quando estiverem disponíveis.",
+          tipo: "Pacote completo",
+          titulo: "Download final no Drive",
+          texto: "Baixe a pasta ou o pacote final com os arquivos organizados em alta qualidade.",
           link: "https://drive.google.com/"
         }
       ],
@@ -1271,7 +1271,7 @@
     const GUEST_SESSION_KEY = `bl-gallery-guest-${GALLERY_ID}`;
     const ADMIN_HASH = "ebce6cc98b7739668eb8ba689e8db0bac90d090755d20d4ee44d09c58724d828";
 
-    let galleryData = JSON.parse(JSON.stringify(DEFAULT_GALLERY));
+    let galleryData = structuredClone(DEFAULT_GALLERY);
     let currentLightboxIndex = 0;
 
     const gate = document.getElementById("gate");
@@ -1298,12 +1298,18 @@
       return {
         ...defaults,
         ...data,
-        accesses: accesses.map((item, index) => ({
-          tipo: item.tipo || defaults.accesses[index]?.tipo || "Acesso",
-          titulo: item.titulo || defaults.accesses[index]?.titulo || "Link da galeria",
-          texto: item.texto || defaults.accesses[index]?.texto || "Abra o link liberado pela equipe.",
-          link: item.link || defaults.accesses[index]?.link || "#"
-        })),
+        accesses: accesses.map((item, index) => {
+          const fallback = defaults.accesses[index] || { tipo: "Link", titulo: "Pasta liberada", texto: "Abra a pasta compartilhada pela equipe.", link: "https://drive.google.com/" };
+          const rawLink = item.link || fallback.link || "#";
+          const isOldGooglePhotos = String(rawLink).includes("photos.google.com");
+
+          return {
+            tipo: isOldGooglePhotos ? fallback.tipo : (item.tipo || fallback.tipo || "Link"),
+            titulo: isOldGooglePhotos ? fallback.titulo : (item.titulo || fallback.titulo || "Pasta liberada"),
+            texto: isOldGooglePhotos ? fallback.texto : (item.texto || fallback.texto || "Abra a pasta compartilhada pela equipe."),
+            link: isOldGooglePhotos ? fallback.link : rawLink
+          };
+        }),
         images: Array.isArray(data.images) ? data.images.filter(Boolean) : []
       };
     }
@@ -1428,11 +1434,11 @@
         const box = document.createElement("div");
         box.className = "access-admin-item";
         box.innerHTML = `
-          <small>Acesso ${index + 1}</small>
-          <input type="text" data-access-field="tipo" data-access-index="${index}" placeholder="Tipo" value="${item.tipo || ''}">
-          <input type="text" data-access-field="titulo" data-access-index="${index}" placeholder="Título" value="${item.titulo || ''}">
-          <textarea data-access-field="texto" data-access-index="${index}" placeholder="Texto">${item.texto || ''}</textarea>
-          <input type="text" data-access-field="link" data-access-index="${index}" placeholder="Link" value="${item.link || ''}">
+          <small>Link de entrega ${index + 1}</small>
+          <input type="text" data-access-field="tipo" data-access-index="${index}" placeholder="Tipo (ex: Fotos em alta, Vídeos, Pacote completo)" value="${item.tipo || ''}">
+          <input type="text" data-access-field="titulo" data-access-index="${index}" placeholder="Título do botão" value="${item.titulo || ''}">
+          <textarea data-access-field="texto" data-access-index="${index}" placeholder="Texto explicando o que tem nessa pasta">${item.texto || ''}</textarea>
+          <input type="text" data-access-field="link" data-access-index="${index}" placeholder="Link da pasta compartilhada no Drive" value="${item.link || ''}">
         `;
         accessAdminList.appendChild(box);
       });
