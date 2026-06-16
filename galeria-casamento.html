@@ -55,19 +55,9 @@
       position: relative;
     }
 
-    body.locked {
-      overflow: hidden;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
+    body.locked { overflow: hidden; }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
 
     .noise {
       position: fixed;
@@ -185,9 +175,8 @@
       max-width: 100%;
     }
 
-    .btn:hover {
-      transform: translateY(-1px);
-    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
     .btn-primary {
       background: #fff;
@@ -247,9 +236,7 @@
       max-width: 100%;
     }
 
-    .hero-copy h1 + h1 {
-      margin-left: 7vw;
-    }
+    .hero-copy h1 + h1 { margin-left: 7vw; }
 
     .hero-description {
       margin-top: 28px;
@@ -381,16 +368,8 @@
       letter-spacing: 2px;
     }
 
-    .m-solid {
-      color: #fff;
-      font-style: italic;
-    }
-
-    .m-stroke {
-      -webkit-text-stroke: 1px rgba(255,255,255,0.3);
-      color: transparent;
-      font-weight: 900;
-    }
+    .m-solid { color: #fff; font-style: italic; }
+    .m-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.3); color: transparent; font-weight: 900; }
 
     @keyframes scrollMarquee {
       0% { transform: translateX(0); }
@@ -443,6 +422,7 @@
       font-size: 1rem;
       line-height: 1.45;
       margin-bottom: 10px;
+      overflow-wrap: anywhere;
     }
 
     .access-card p {
@@ -476,11 +456,13 @@
       background: #0b0b0b;
       cursor: pointer;
       position: relative;
+      padding: 0;
+      color: inherit;
+      font: inherit;
+      text-align: left;
     }
 
-    .photo-card.large {
-      grid-column: span 8;
-    }
+    .photo-card.large { grid-column: span 8; }
 
     .photo-card img {
       width: 100%;
@@ -578,6 +560,7 @@
       font-size: 0.56rem;
       letter-spacing: 3px;
       text-transform: uppercase;
+      cursor: pointer;
     }
 
     .whatsapp-float {
@@ -657,17 +640,23 @@
       gap: 10px;
     }
 
-    .gate-form input {
+    .gate-form input,
+    .admin-box input,
+    .admin-box textarea,
+    .admin-box select {
       width: 100%;
       padding: 15px 16px;
-      border-radius: 999px;
+      border-radius: 14px;
       border: 1px solid var(--line-strong);
       background: rgba(0,0,0,0.42);
       color: #fff;
       outline: none;
       font: inherit;
-      text-align: center;
+      min-width: 0;
     }
+
+    .gate-form input { border-radius: 999px; text-align: center; }
+    .admin-box textarea { min-height: 110px; resize: vertical; }
 
     .gate-error {
       min-height: 18px;
@@ -687,9 +676,7 @@
       padding: 62px 18px 32px;
     }
 
-    .lightbox.open {
-      display: flex;
-    }
+    .lightbox.open { display: flex; }
 
     .lightbox img {
       max-width: 100%;
@@ -697,7 +684,8 @@
       object-fit: contain;
     }
 
-    .lightbox button {
+    .lightbox-close,
+    .admin-close {
       position: fixed;
       top: 16px;
       right: 16px;
@@ -712,56 +700,249 @@
       z-index: 5;
     }
 
-    .hidden {
-      display: none !important;
+    .lightbox-nav {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      padding: 0 16px;
     }
+
+    .lightbox-arrow {
+      pointer-events: auto;
+      width: 46px;
+      height: 46px;
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+
+    .lightbox-counter {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .hidden { display: none !important; }
+
+    #admin-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: none;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: rgba(0,0,0,0.98);
+      padding: 5vh 5vw;
+      max-width: 100%;
+    }
+
+    .admin-shell {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .admin-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .admin-head h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-style: italic;
+    }
+
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .admin-box {
+      background: #0a0a0a;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 22px;
+      min-width: 0;
+    }
+
+    .admin-box h3 {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .admin-grid .full { grid-column: 1 / -1; }
+
+    .admin-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .file-input-wrap {
+      border: 1px dashed #333;
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      margin: 18px 0 12px;
+      background: rgba(255,255,255,0.02);
+      overflow: hidden;
+    }
+
+    .file-input-wrap input { border-radius: 12px; margin-top: 10px; }
+
+    .admin-status {
+      min-height: 18px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .access-admin-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .access-admin-item {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.02);
+      border-radius: 18px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .access-admin-item small {
+      color: var(--muted-2);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.62rem;
+    }
+
+    .image-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      max-height: 560px;
+      overflow-y: auto;
+    }
+
+    .image-item {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line-strong);
+      background: #111;
+    }
+
+    .image-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-item .delete-btn {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(255, 60, 60, 0.92);
+      color: white;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .image-item .delete-btn:hover {
+      background: #ff0000;
+      transform: scale(1.08);
+    }
+
+    .toast-wrap {
+      position: fixed;
+      top: 84px;
+      right: 16px;
+      z-index: 10000;
+      display: grid;
+      gap: 10px;
+      max-width: 340px;
+    }
+
+    .toast {
+      background: #111;
+      color: #fff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 0.86rem;
+      line-height: 1.6;
+      box-shadow: var(--shadow);
+    }
+
+    .toast.success { border-color: rgba(180,255,180,0.18); }
+    .toast.error { border-color: rgba(255,160,160,0.18); }
 
     @media (max-width: 1100px) {
       .hero-grid,
       .access-grid,
-      .cta-panel {
+      .cta-panel,
+      .admin-layout {
         grid-template-columns: 1fr;
       }
 
-      .event-card {
-        min-height: 520px;
-      }
-
-      .photo-card,
-      .photo-card.large {
-        grid-column: span 6;
-      }
+      .event-card { min-height: 520px; }
+      .photo-card, .photo-card.large { grid-column: span 6; }
     }
 
     @media (max-width: 768px) {
-      .container {
-        width: min(100%, calc(100% - 32px));
-      }
-
-      header {
-        padding: 14px 0;
-      }
-
-      .brand-mini {
-        display: none;
-      }
-
-      .logo-circle {
-        width: 40px;
-        height: 40px;
-      }
-
-      .nav-content {
-        gap: 10px;
-      }
-
-      .nav-actions {
-        gap: 8px;
-      }
-
-      .btn-primary,
-      .btn-secondary,
-      .btn-ghost {
+      .container { width: min(100%, calc(100% - 32px)); }
+      header { padding: 14px 0; }
+      .brand-mini { display: none; }
+      .logo-circle { width: 40px; height: 40px; }
+      .nav-content { gap: 10px; }
+      .nav-actions { gap: 8px; }
+      .btn-primary, .btn-secondary, .btn-ghost {
         padding: 10px 12px;
         min-height: 38px;
         font-size: 8px;
@@ -774,19 +955,9 @@
         align-items: stretch;
       }
 
-      .hero-grid {
-        gap: 18px;
-      }
-
-      .hero-copy h1 {
-        font-size: 17vw;
-        line-height: 0.88;
-      }
-
-      .hero-copy h1 + h1 {
-        margin-left: 0;
-      }
-
+      .hero-grid { gap: 18px; }
+      .hero-copy h1 { font-size: 17vw; line-height: 0.88; }
+      .hero-copy h1 + h1 { margin-left: 0; }
       .hero-description {
         margin-top: 18px;
         font-size: 0.63rem;
@@ -795,157 +966,55 @@
         max-width: 100%;
       }
 
-      .hero-cta {
-        margin-top: 18px;
-        gap: 8px;
-      }
-
-      .hero-cta .btn {
-        flex: 1 1 calc(50% - 4px);
-      }
-
-      .event-card {
-        min-height: 380px;
-        border-radius: 20px;
-      }
-
-      .event-info {
-        padding: 18px;
-      }
-
-      .event-info small {
-        font-size: 0.54rem;
-        letter-spacing: 2px;
-      }
-
-      .event-info p {
-        font-size: 0.78rem;
-        line-height: 1.55;
-      }
-
-      .event-cover.logo-mode img {
-        width: 122px;
-        height: 122px;
-        padding: 24px;
-      }
-
-      .marquee-wrap {
-        margin-bottom: 18px;
-        padding: 12px 0;
-      }
-
-      .marquee span {
-        font-size: 0.88rem;
-        padding-right: 22px;
-        letter-spacing: 1px;
-      }
-
-      .access-section,
-      .preview-section,
-      .help-section {
-        padding: 34px 0;
-      }
-
-      .section-tag {
-        font-size: 0.56rem;
-        letter-spacing: 2px;
-        margin-bottom: 10px;
-      }
-
-      .section-title {
-        font-size: 1.9rem;
-        margin-bottom: 12px;
-      }
-
-      .section-copy {
-        font-size: 0.83rem;
-        line-height: 1.65;
-      }
-
-      .access-grid {
-        gap: 12px;
-        margin-top: 18px;
-      }
-
-      .access-card {
-        min-height: 210px;
-        padding: 18px;
-        border-radius: 18px;
-      }
-
-      .access-card strong {
-        font-size: 0.9rem;
-      }
-
-      .access-card p {
-        font-size: 0.78rem;
-        line-height: 1.55;
-      }
-
-      .preview-toolbar {
-        margin-bottom: 20px;
-      }
-
-      .preview-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .photo-card,
-      .photo-card.large {
+      .hero-cta { margin-top: 18px; gap: 8px; }
+      .hero-cta .btn { flex: 1 1 calc(50% - 4px); }
+      .event-card { min-height: 380px; border-radius: 20px; }
+      .event-info { padding: 18px; }
+      .event-info small { font-size: 0.54rem; letter-spacing: 2px; }
+      .event-info p { font-size: 0.78rem; line-height: 1.55; }
+      .event-cover.logo-mode img { width: 122px; height: 122px; padding: 24px; }
+      .marquee-wrap { margin-bottom: 18px; padding: 12px 0; }
+      .marquee span { font-size: 0.88rem; padding-right: 22px; letter-spacing: 1px; }
+      .access-section, .preview-section, .help-section { padding: 34px 0; }
+      .section-tag { font-size: 0.56rem; letter-spacing: 2px; margin-bottom: 10px; }
+      .section-title { font-size: 1.9rem; margin-bottom: 12px; }
+      .section-copy { font-size: 0.83rem; line-height: 1.65; }
+      .access-grid { gap: 12px; margin-top: 18px; }
+      .access-card { min-height: 210px; padding: 18px; border-radius: 18px; }
+      .access-card strong { font-size: 0.9rem; }
+      .access-card p { font-size: 0.78rem; line-height: 1.55; }
+      .preview-toolbar { margin-bottom: 20px; }
+      .preview-grid { grid-template-columns: 1fr; }
+      .photo-card, .photo-card.large {
         grid-column: auto;
         min-height: 300px;
         border-radius: 14px;
       }
 
-      .empty-state {
-        padding: 30px 16px;
-        font-size: 0.82rem;
-      }
-
-      .cta-panel {
-        padding: 20px;
-        border-radius: 20px;
-      }
-
-      .cta-panel p {
-        font-size: 0.82rem;
-        line-height: 1.6;
-      }
-
-      footer {
-        padding: 40px 0 90px;
-      }
-
-      .foot-link {
-        font-size: 0.56rem;
-        letter-spacing: 1px;
-        padding: 10px 12px;
-      }
-
-      .copyright {
-        font-size: 0.5rem;
-        letter-spacing: 1.5px;
-        line-height: 1.6;
-      }
-
-      .whatsapp-float {
-        right: 12px;
-        bottom: 12px;
-        padding: 10px 12px;
-        font-size: 0.58rem;
-        letter-spacing: 1px;
-      }
-
-      .gate-card {
-        border-radius: 22px;
-        padding: 22px;
-      }
+      .empty-state { padding: 30px 16px; font-size: 0.82rem; }
+      .cta-panel { padding: 20px; border-radius: 20px; }
+      .cta-panel p { font-size: 0.82rem; line-height: 1.6; }
+      footer { padding: 40px 0 90px; }
+      .foot-link { font-size: 0.56rem; letter-spacing: 1px; padding: 10px 12px; }
+      .copyright { font-size: 0.5rem; letter-spacing: 1.5px; line-height: 1.6; }
+      .whatsapp-float { right: 12px; bottom: 12px; padding: 10px 12px; font-size: 0.58rem; letter-spacing: 1px; }
+      .gate-card { border-radius: 22px; padding: 22px; }
+      .lightbox-nav { display: none; }
+      #admin-panel { padding: 68px 14px 18px; }
+      .admin-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .admin-head h2 { font-size: 1.35rem; }
+      .admin-box { padding: 16px; border-radius: 18px; }
+      .admin-grid, .admin-actions { grid-template-columns: 1fr; }
+      .image-list { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); max-height: 380px; }
+      .toast-wrap { top: 70px; right: 12px; left: 12px; max-width: none; }
+      .toast { font-size: 0.8rem; padding: 12px 14px; }
     }
   </style>
 </head>
 
 <body class="locked">
   <div class="noise"></div>
+  <div class="toast-wrap" id="toastWrap"></div>
 
   <div class="gate" id="gate">
     <div class="gate-card">
@@ -962,8 +1031,68 @@
   </div>
 
   <div class="lightbox" id="lightbox">
-    <button type="button" onclick="closeLightbox()">&times;</button>
+    <button type="button" class="lightbox-close" onclick="closeLightbox()">&times;</button>
     <img id="lightboxImg" src="" alt="Prévia ampliada">
+    <div class="lightbox-nav">
+      <button class="lightbox-arrow" type="button" onclick="prevLightbox()">&#8592;</button>
+      <button class="lightbox-arrow" type="button" onclick="nextLightbox()">&#8594;</button>
+    </div>
+    <div class="lightbox-counter" id="lightboxCounter">1 / 1</div>
+  </div>
+
+  <div id="admin-panel">
+    <button class="admin-close" onclick="closeGalleryAdmin()">&times;</button>
+
+    <div class="admin-shell">
+      <div class="admin-head">
+        <div>
+          <p class="section-tag">Área interna</p>
+          <h2>Painel da galeria</h2>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-secondary" onclick="loadGallery(true)">Sincronizar</button>
+          <button class="btn btn-secondary" onclick="logoutGalleryAdmin()">Sair</button>
+        </div>
+      </div>
+
+      <div class="admin-layout">
+        <div class="admin-box">
+          <h3>Dados do casamento</h3>
+          <div class="admin-grid">
+            <input class="full" type="text" id="adm-casal" placeholder="Nome dos noivos">
+            <input class="full" type="text" id="adm-data-local" placeholder="Ex: Casamento • Belo Horizonte/MG • 2026">
+            <input class="full" type="text" id="adm-senha" placeholder="Senha dos convidados">
+            <input class="full" type="text" id="adm-capa" placeholder="URL da capa (opcional)">
+            <input class="full" type="text" id="adm-whatsapp" placeholder="Link do WhatsApp de suporte">
+            <textarea class="full" id="adm-descricao" placeholder="Descrição da galeria"></textarea>
+          </div>
+
+          <div class="access-admin-list" id="accessAdminList"></div>
+
+          <div class="admin-actions">
+            <button class="btn btn-primary" id="saveGalleryBtn" onclick="saveGallerySettings()">Salvar dados</button>
+            <button class="btn btn-secondary" onclick="fillAdminForm()">Recarregar campos</button>
+          </div>
+
+          <div class="file-input-wrap">
+            <div style="font-size:0.76rem; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;">Subir fotos para a galeria</div>
+            <input type="file" id="galleryFiles" multiple accept="image/*">
+            <div class="admin-actions">
+              <button class="btn btn-primary" id="uploadGalleryBtn" onclick="handleGalleryUpload()">Subir fotos</button>
+              <button class="btn btn-secondary" onclick="clearGalleryFileInput()">Limpar seleção</button>
+            </div>
+          </div>
+
+          <div class="admin-status" id="adminStatus"></div>
+        </div>
+
+        <div class="admin-box">
+          <h3>Fotos publicadas</h3>
+          <p class="section-copy" style="font-size:0.82rem; margin-bottom:12px;">As fotos ficam no Cloudinary e os links são salvos no Firestore, usando o mesmo Firebase do site atual.</p>
+          <div id="adminImageList" class="image-list"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <header>
@@ -998,7 +1127,7 @@
 
           <div class="hero-cta">
             <a href="#links" class="btn btn-primary">Ver acessos</a>
-            <a href="#previas" class="btn btn-secondary">Ver prévias</a>
+            <a href="#previas" class="btn btn-secondary">Ver fotos</a>
           </div>
         </div>
 
@@ -1033,9 +1162,9 @@
     <section class="container preview-section" id="previas">
       <div class="preview-toolbar">
         <div>
-          <span class="section-tag">Prévia visual</span>
-          <h2 class="section-title" style="margin-bottom:10px;">Momentos selecionados.</h2>
-          <p class="section-copy">Clique em uma imagem para ampliar. As prévias podem ser fotos otimizadas, enquanto o pacote completo fica no Drive ou Google Photos.</p>
+          <span class="section-tag">Galeria visual</span>
+          <h2 class="section-title" style="margin-bottom:10px;">Momentos publicados.</h2>
+          <p class="section-copy">As fotos abaixo são carregadas direto do banco de dados da galeria. Clique em uma imagem para ampliar.</p>
         </div>
         <a href="#links" class="btn btn-secondary">Abrir links</a>
       </div>
@@ -1066,59 +1195,84 @@
       <a href="https://www.instagram.com/blproducoe.s" target="_blank" class="foot-link">Instagram</a>
       <a href="https://wa.me/5531985534292" target="_blank" class="foot-link" id="footerWhatsapp">WhatsApp</a>
     </div>
-    <span class="copyright">BLPRODUÇÕES © 2026 // GALERIA PRIVADA</span>
+    <span class="copyright" onclick="openGalleryAdmin()">BLPRODUÇÕES © 2026 // GALERIA PRIVADA</span>
   </footer>
 
   <a href="https://wa.me/5531985534292" target="_blank" class="whatsapp-float" id="floatWhatsapp">WhatsApp</a>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
     /*
-      EDITE AQUI PARA CADA CASAMENTO
-      1. Troque SENHA_DA_GALERIA.
-      2. Troque casal, dataLocal, descricao e capa.
-      3. Cole os links do Google Photos/Drive em ACESSOS.
-      4. Para prévias dentro da página, cole URLs ou caminhos de imagens em PREVIAS.
+      Esta página usa a mesma lógica do painel do portfólio:
+      - Cloudinary para upload das imagens.
+      - Firestore para salvar os dados.
+      - Mesmo firebaseConfig, CLOUD_NAME e UPLOAD_PRESET do index.html.
+
+      Para criar outra galeria, duplique esta página e troque o GALLERY_ID.
     */
 
-    const SENHA_DA_GALERIA = "bl2026";
+    const CLOUD_NAME = "dxcfqlset";
+    const UPLOAD_PRESET = "blproducoes";
+    const GALLERY_COLLECTION = "galleries";
+    const GALLERY_ID = "casamento-principal";
 
-    const EVENTO = {
+    const firebaseConfig = {
+      apiKey: "AIzaSyAf_6A_0Qff3Jvx0oBkWGCH_5sWQgqsl5w",
+      authDomain: "bl-portfolio-90f61.firebaseapp.com",
+      projectId: "bl-portfolio-90f61",
+      storageBucket: "bl-portfolio-90f61.firebasestorage.app",
+      messagingSenderId: "35035346215",
+      appId: "1:35035346215:web:28f36b81f5197996d9a502"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const galleryRef = doc(db, GALLERY_COLLECTION, GALLERY_ID);
+
+    const DEFAULT_GALLERY = {
       casal: "Ana & João",
       dataLocal: "Casamento • Belo Horizonte/MG • 2026",
       descricao: "Galeria privada com fotos, vídeos e arquivos do casamento. Obrigado por fazer parte desse dia.",
-      capa: "", // Exemplo: "casamento/capa.jpg". Se deixar vazio, aparece a logo.
-      whatsapp: "https://wa.me/5531985534292?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20a%20galeria%20do%20casamento."
+      guestPassword: "bl2026",
+      capa: "",
+      whatsapp: "https://wa.me/5531985534292?text=Ol%C3%A1%2C%20preciso%20de%20ajuda%20com%20a%20galeria%20do%20casamento.",
+      accesses: [
+        {
+          tipo: "Fotos",
+          titulo: "Álbum completo",
+          texto: "Abra a seleção completa de fotos liberada para os convidados.",
+          link: "https://photos.google.com/"
+        },
+        {
+          tipo: "Vídeos",
+          titulo: "Vídeos do casamento",
+          texto: "Assista aos vídeos editados e materiais liberados pela BLPRODUÇÕES.",
+          link: "https://drive.google.com/"
+        },
+        {
+          tipo: "Download",
+          titulo: "Arquivos em alta",
+          texto: "Baixe os arquivos finais em alta qualidade quando estiverem disponíveis.",
+          link: "https://drive.google.com/"
+        }
+      ],
+      images: []
     };
 
-    const ACESSOS = [
-      {
-        tipo: "Fotos",
-        titulo: "Álbum completo",
-        texto: "Abra a seleção completa de fotos liberada para os convidados.",
-        link: "https://photos.google.com/"
-      },
-      {
-        tipo: "Vídeos",
-        titulo: "Vídeos do casamento",
-        texto: "Assista aos vídeos editados e materiais liberados pela BLPRODUÇÕES.",
-        link: "https://drive.google.com/"
-      },
-      {
-        tipo: "Download",
-        titulo: "Arquivos em alta",
-        texto: "Baixe os arquivos finais em alta qualidade quando estiverem disponíveis.",
-        link: "https://drive.google.com/"
-      }
-    ];
+    const ADMIN_SESSION_KEY = "bl-gallery-admin-auth";
+    const GUEST_SESSION_KEY = `bl-gallery-guest-${GALLERY_ID}`;
+    const ADMIN_HASH = "ebce6cc98b7739668eb8ba689e8db0bac90d090755d20d4ee44d09c58724d828";
 
-    const PREVIAS = [
-      // Exemplo com fotos locais:
-      // { titulo: "Cerimônia", imagem: "casamento/foto-01.jpg", destaque: true },
-      // { titulo: "Noivos", imagem: "casamento/foto-02.jpg" },
-      // { titulo: "Festa", imagem: "casamento/foto-03.jpg" }
-    ];
-
-    const SESSION_KEY = "bl-galeria-casamento-liberada";
+    let galleryData = JSON.parse(JSON.stringify(DEFAULT_GALLERY));
+    let currentLightboxIndex = 0;
 
     const gate = document.getElementById("gate");
     const gateForm = document.getElementById("gateForm");
@@ -1127,37 +1281,71 @@
     const eventCover = document.getElementById("eventCover");
     const accessGrid = document.getElementById("accessGrid");
     const previewGrid = document.getElementById("previewGrid");
+    const adminStatus = document.getElementById("adminStatus");
+    const adminImageList = document.getElementById("adminImageList");
+    const accessAdminList = document.getElementById("accessAdminList");
 
-    function unlockGallery() {
-      gate.classList.add("hidden");
-      document.body.classList.remove("locked");
-      sessionStorage.setItem(SESSION_KEY, "true");
+    function cloneDefault() {
+      return JSON.parse(JSON.stringify(DEFAULT_GALLERY));
     }
 
-    gateForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const pass = gatePass.value.trim();
+    function sanitizeGallery(data = {}) {
+      const defaults = cloneDefault();
+      const accesses = Array.isArray(data.accesses) && data.accesses.length
+        ? data.accesses
+        : defaults.accesses;
 
-      if (pass === SENHA_DA_GALERIA) {
-        unlockGallery();
-        return;
-      }
+      return {
+        ...defaults,
+        ...data,
+        accesses: accesses.map((item, index) => ({
+          tipo: item.tipo || defaults.accesses[index]?.tipo || "Acesso",
+          titulo: item.titulo || defaults.accesses[index]?.titulo || "Link da galeria",
+          texto: item.texto || defaults.accesses[index]?.texto || "Abra o link liberado pela equipe.",
+          link: item.link || defaults.accesses[index]?.link || "#"
+        })),
+        images: Array.isArray(data.images) ? data.images.filter(Boolean) : []
+      };
+    }
 
-      gateError.textContent = "Senha incorreta. Confira a senha enviada pela equipe.";
-      gatePass.select();
-    });
+    function showToast(message, type = "success") {
+      const wrap = document.getElementById("toastWrap");
+      const el = document.createElement("div");
+      el.className = `toast ${type}`;
+      el.textContent = message;
+      wrap.appendChild(el);
+      setTimeout(() => el.remove(), 3600);
+    }
+
+    function setAdminStatus(text = "", type = "normal") {
+      adminStatus.textContent = text;
+      adminStatus.style.color = type === "error"
+        ? "#ffb5b5"
+        : type === "success"
+        ? "#d8ffd8"
+        : "#9a9a9a";
+    }
+
+    function optimizeCloudinary(url, width = 1600, quality = 78) {
+      if (!url || !url.includes("res.cloudinary.com")) return url;
+      return url.replace("/upload/", `/upload/f_auto,q_${quality},w_${width},c_limit/`);
+    }
 
     function fillEvent() {
-      document.getElementById("eventCouple").textContent = EVENTO.casal;
-      document.getElementById("eventInfo").textContent = EVENTO.dataLocal;
-      document.getElementById("heroDescription").textContent = EVENTO.descricao;
+      document.getElementById("eventCouple").textContent = galleryData.casal;
+      document.getElementById("eventInfo").textContent = galleryData.dataLocal;
+      document.getElementById("heroDescription").textContent = galleryData.descricao;
 
       document.querySelectorAll("#navWhatsapp, #helpWhatsapp, #footerWhatsapp, #floatWhatsapp").forEach((link) => {
-        link.href = EVENTO.whatsapp;
+        link.href = galleryData.whatsapp || DEFAULT_GALLERY.whatsapp;
       });
 
-      if (EVENTO.capa) {
-        eventCover.innerHTML = `<img src="${EVENTO.capa}" alt="${EVENTO.casal}">`;
+      eventCover.classList.remove("logo-mode");
+
+      if (galleryData.capa) {
+        eventCover.innerHTML = `<img src="${optimizeCloudinary(galleryData.capa, 1200, 76)}" alt="${galleryData.casal}">`;
+      } else if (galleryData.images.length) {
+        eventCover.innerHTML = `<img src="${optimizeCloudinary(galleryData.images[0], 1200, 76)}" alt="${galleryData.casal}">`;
       } else {
         eventCover.classList.add("logo-mode");
         eventCover.innerHTML = `<img src="logo.png" alt="BLPRODUÇÕES">`;
@@ -1167,7 +1355,7 @@
     function renderAccess() {
       accessGrid.innerHTML = "";
 
-      ACESSOS.forEach((item) => {
+      galleryData.accesses.forEach((item) => {
         const card = document.createElement("article");
         card.className = "access-card";
         card.innerHTML = `
@@ -1176,7 +1364,7 @@
             <strong>${item.titulo}</strong>
             <p>${item.texto}</p>
           </div>
-          <a href="${item.link}" target="_blank" class="btn btn-primary">Abrir</a>
+          <a href="${item.link || '#'}" target="_blank" class="btn btn-primary">Abrir</a>
         `;
         accessGrid.appendChild(card);
       });
@@ -1185,53 +1373,361 @@
     function renderPreviews() {
       previewGrid.innerHTML = "";
 
-      if (!PREVIAS.length) {
+      if (!galleryData.images.length) {
         previewGrid.innerHTML = `
           <div class="empty-state" style="grid-column:1/-1;">
-            As prévias ainda não foram adicionadas. Para mostrar fotos nesta área, crie uma pasta como <code>casamento/</code> no projeto e preencha o array <code>PREVIAS</code> no final deste arquivo.
+            Nenhuma foto foi publicada ainda. No rodapé, clique em <code>GALERIA PRIVADA</code>, entre no painel interno e suba as imagens do casamento.
           </div>
         `;
         return;
       }
 
-      PREVIAS.forEach((foto) => {
+      galleryData.images.forEach((src, index) => {
         const card = document.createElement("button");
         card.type = "button";
-        card.className = `photo-card ${foto.destaque ? "large" : ""}`;
-        card.onclick = () => openLightbox(foto.imagem);
+        card.className = `photo-card ${index % 7 === 0 ? "large" : ""}`;
+        card.onclick = () => openLightbox(index);
         card.innerHTML = `
-          <img src="${foto.imagem}" alt="${foto.titulo}" loading="lazy">
-          <span>${foto.titulo}</span>
+          <img src="${optimizeCloudinary(src, index % 7 === 0 ? 1500 : 900, 74)}" alt="Foto ${index + 1} - ${galleryData.casal}" loading="lazy">
+          <span>Foto ${String(index + 1).padStart(2, "0")}</span>
         `;
         previewGrid.appendChild(card);
       });
     }
 
-    function openLightbox(src) {
-      document.getElementById("lightboxImg").src = src;
+    function renderAdminImages() {
+      adminImageList.innerHTML = "";
+
+      if (!galleryData.images.length) {
+        adminImageList.innerHTML = `<div class="empty-state" style="grid-column:1/-1; padding:28px 14px;">Nenhuma foto publicada.</div>`;
+        return;
+      }
+
+      galleryData.images.forEach((src, index) => {
+        const item = document.createElement("div");
+        item.className = "image-item";
+        item.innerHTML = `
+          <img src="${optimizeCloudinary(src, 360, 68)}" alt="Foto ${index + 1}">
+          <button class="delete-btn" title="Excluir foto" onclick="deleteGalleryImage('${encodeURIComponent(src)}')">&times;</button>
+        `;
+        adminImageList.appendChild(item);
+      });
+    }
+
+    function renderAll() {
+      fillEvent();
+      renderAccess();
+      renderPreviews();
+      renderAdminImages();
+    }
+
+    function fillAccessAdminList() {
+      accessAdminList.innerHTML = "";
+
+      galleryData.accesses.forEach((item, index) => {
+        const box = document.createElement("div");
+        box.className = "access-admin-item";
+        box.innerHTML = `
+          <small>Acesso ${index + 1}</small>
+          <input type="text" data-access-field="tipo" data-access-index="${index}" placeholder="Tipo" value="${item.tipo || ''}">
+          <input type="text" data-access-field="titulo" data-access-index="${index}" placeholder="Título" value="${item.titulo || ''}">
+          <textarea data-access-field="texto" data-access-index="${index}" placeholder="Texto">${item.texto || ''}</textarea>
+          <input type="text" data-access-field="link" data-access-index="${index}" placeholder="Link" value="${item.link || ''}">
+        `;
+        accessAdminList.appendChild(box);
+      });
+    }
+
+    function fillAdminForm() {
+      document.getElementById("adm-casal").value = galleryData.casal || "";
+      document.getElementById("adm-data-local").value = galleryData.dataLocal || "";
+      document.getElementById("adm-senha").value = galleryData.guestPassword || "";
+      document.getElementById("adm-capa").value = galleryData.capa || "";
+      document.getElementById("adm-whatsapp").value = galleryData.whatsapp || "";
+      document.getElementById("adm-descricao").value = galleryData.descricao || "";
+      fillAccessAdminList();
+      renderAdminImages();
+      setAdminStatus("Campos carregados com os dados atuais da galeria.");
+    }
+
+    window.fillAdminForm = fillAdminForm;
+
+    async function loadGallery(showSuccess = false) {
+      try {
+        const snap = await getDoc(galleryRef);
+        galleryData = sanitizeGallery(snap.exists() ? snap.data() : DEFAULT_GALLERY);
+        renderAll();
+        fillAdminForm();
+
+        if (sessionStorage.getItem(GUEST_SESSION_KEY) === "true") unlockGallery();
+        if (showSuccess) showToast("Galeria sincronizada.");
+      } catch (error) {
+        console.error(error);
+        galleryData = sanitizeGallery(DEFAULT_GALLERY);
+        renderAll();
+        fillAdminForm();
+        showToast("Erro ao carregar a galeria. Usando dados padrão.", "error");
+      }
+    }
+
+    window.loadGallery = loadGallery;
+
+    function unlockGallery() {
+      gate.classList.add("hidden");
+      document.body.classList.remove("locked");
+      sessionStorage.setItem(GUEST_SESSION_KEY, "true");
+    }
+
+    gateForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const pass = gatePass.value.trim();
+      const expected = String(galleryData.guestPassword || DEFAULT_GALLERY.guestPassword).trim();
+
+      if (pass === expected) {
+        unlockGallery();
+        return;
+      }
+
+      gateError.textContent = "Senha incorreta. Confira a senha enviada pela equipe.";
+      gatePass.select();
+    });
+
+    function openLightbox(index) {
+      if (!galleryData.images.length) return;
+      currentLightboxIndex = Math.max(0, Math.min(index, galleryData.images.length - 1));
+      updateLightbox();
       document.getElementById("lightbox").classList.add("open");
       document.body.classList.add("locked");
+    }
+
+    function updateLightbox() {
+      const src = galleryData.images[currentLightboxIndex];
+      document.getElementById("lightboxImg").src = optimizeCloudinary(src, 1900, 82);
+      document.getElementById("lightboxCounter").textContent = `${currentLightboxIndex + 1} / ${galleryData.images.length}`;
     }
 
     function closeLightbox() {
       document.getElementById("lightbox").classList.remove("open");
       document.getElementById("lightboxImg").src = "";
-      if (gate.classList.contains("hidden")) document.body.classList.remove("locked");
+      if (gate.classList.contains("hidden") && document.getElementById("admin-panel").style.display !== "block") {
+        document.body.classList.remove("locked");
+      }
+    }
+
+    function prevLightbox() {
+      if (!galleryData.images.length) return;
+      currentLightboxIndex = (currentLightboxIndex - 1 + galleryData.images.length) % galleryData.images.length;
+      updateLightbox();
+    }
+
+    function nextLightbox() {
+      if (!galleryData.images.length) return;
+      currentLightboxIndex = (currentLightboxIndex + 1) % galleryData.images.length;
+      updateLightbox();
     }
 
     window.closeLightbox = closeLightbox;
+    window.prevLightbox = prevLightbox;
+    window.nextLightbox = nextLightbox;
+
+    async function sha256(text) {
+      const enc = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", enc);
+      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function openGalleryAdmin() {
+      const alreadyLogged = sessionStorage.getItem(ADMIN_SESSION_KEY) === "true";
+
+      if (!alreadyLogged) {
+        const pass = prompt("Acesso administrativo:");
+        if (!pass) return;
+
+        const hashed = await sha256(pass);
+        if (hashed !== ADMIN_HASH) {
+          alert("Acesso negado.");
+          return;
+        }
+
+        sessionStorage.setItem(ADMIN_SESSION_KEY, "true");
+      }
+
+      fillAdminForm();
+      document.getElementById("admin-panel").style.display = "block";
+      document.body.classList.add("locked");
+    }
+
+    function closeGalleryAdmin() {
+      document.getElementById("admin-panel").style.display = "none";
+      if (gate.classList.contains("hidden")) document.body.classList.remove("locked");
+    }
+
+    function logoutGalleryAdmin() {
+      sessionStorage.removeItem(ADMIN_SESSION_KEY);
+      closeGalleryAdmin();
+      showToast("Você saiu do painel da galeria.");
+    }
+
+    window.openGalleryAdmin = openGalleryAdmin;
+    window.closeGalleryAdmin = closeGalleryAdmin;
+    window.logoutGalleryAdmin = logoutGalleryAdmin;
+
+    function collectAccessesFromAdmin() {
+      const items = JSON.parse(JSON.stringify(galleryData.accesses || DEFAULT_GALLERY.accesses));
+      document.querySelectorAll("[data-access-index]").forEach((input) => {
+        const index = Number(input.dataset.accessIndex);
+        const field = input.dataset.accessField;
+        if (!items[index]) items[index] = { tipo: "Acesso", titulo: "", texto: "", link: "" };
+        items[index][field] = input.value.trim();
+      });
+      return items;
+    }
+
+    async function saveGallerySettings() {
+      const btn = document.getElementById("saveGalleryBtn");
+      btn.disabled = true;
+      btn.textContent = "Salvando...";
+      setAdminStatus("Salvando dados da galeria...");
+
+      const payload = {
+        casal: document.getElementById("adm-casal").value.trim() || DEFAULT_GALLERY.casal,
+        dataLocal: document.getElementById("adm-data-local").value.trim() || DEFAULT_GALLERY.dataLocal,
+        guestPassword: document.getElementById("adm-senha").value.trim() || DEFAULT_GALLERY.guestPassword,
+        capa: document.getElementById("adm-capa").value.trim(),
+        whatsapp: document.getElementById("adm-whatsapp").value.trim() || DEFAULT_GALLERY.whatsapp,
+        descricao: document.getElementById("adm-descricao").value.trim() || DEFAULT_GALLERY.descricao,
+        accesses: collectAccessesFromAdmin(),
+        images: galleryData.images || [],
+        updatedAt: new Date()
+      };
+
+      try {
+        await setDoc(galleryRef, payload, { merge: true });
+        galleryData = sanitizeGallery(payload);
+        renderAll();
+        fillAdminForm();
+        showToast("Galeria salva com sucesso.");
+        setAdminStatus("Galeria salva com sucesso.", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Erro ao salvar a galeria.", "error");
+        setAdminStatus("Erro ao salvar a galeria. Verifique as regras do Firestore.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Salvar dados";
+      }
+    }
+
+    window.saveGallerySettings = saveGallerySettings;
+
+    async function uploadImages(files) {
+      const uploadedUrls = [];
+
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", UPLOAD_PRESET);
+        formData.append("folder", `blproducoes/${GALLERY_ID}`);
+
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+          method: "POST",
+          body: formData
+        });
+
+        const json = await res.json();
+
+        if (json.secure_url) {
+          uploadedUrls.push(json.secure_url);
+        } else {
+          console.error(json);
+          throw new Error("Falha no upload de uma das imagens.");
+        }
+      }
+
+      return uploadedUrls;
+    }
+
+    async function handleGalleryUpload() {
+      const input = document.getElementById("galleryFiles");
+      const files = Array.from(input.files || []);
+      const btn = document.getElementById("uploadGalleryBtn");
+
+      if (!files.length) {
+        setAdminStatus("Selecione pelo menos uma imagem.", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = `Subindo ${files.length} foto(s)...`;
+      setAdminStatus("Subindo fotos para o Cloudinary...");
+
+      try {
+        const uploadedUrls = await uploadImages(files);
+        const finalImages = [...(galleryData.images || []), ...uploadedUrls];
+        const payload = {
+          ...galleryData,
+          images: finalImages,
+          updatedAt: new Date()
+        };
+
+        await setDoc(galleryRef, payload, { merge: true });
+        galleryData = sanitizeGallery(payload);
+        input.value = "";
+        renderAll();
+        fillAdminForm();
+        showToast("Fotos adicionadas à galeria.");
+        setAdminStatus("Fotos adicionadas com sucesso.", "success");
+      } catch (error) {
+        console.error(error);
+        showToast("Erro ao subir as fotos.", "error");
+        setAdminStatus("Erro no upload. Verifique o upload preset do Cloudinary e as regras do Firestore.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Subir fotos";
+      }
+    }
+
+    window.handleGalleryUpload = handleGalleryUpload;
+
+    function clearGalleryFileInput() {
+      document.getElementById("galleryFiles").value = "";
+      setAdminStatus("Seleção de fotos limpa.");
+    }
+
+    window.clearGalleryFileInput = clearGalleryFileInput;
+
+    async function deleteGalleryImage(encodedUrl) {
+      const imageUrl = decodeURIComponent(encodedUrl);
+      if (!confirm("Tem certeza que deseja remover esta foto da galeria?")) return;
+
+      try {
+        const finalImages = (galleryData.images || []).filter((img) => img !== imageUrl);
+        await updateDoc(galleryRef, { images: finalImages, updatedAt: new Date() });
+        galleryData.images = finalImages;
+        renderAll();
+        fillAdminForm();
+        showToast("Foto removida da galeria.");
+      } catch (error) {
+        console.error(error);
+        showToast("Erro ao remover a foto.", "error");
+        setAdminStatus("Erro ao remover a foto. Verifique as regras do Firestore.", "error");
+      }
+    }
+
+    window.deleteGalleryImage = deleteGalleryImage;
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeLightbox();
+      const isLightboxOpen = document.getElementById("lightbox").classList.contains("open");
+      if (event.key === "Escape") {
+        if (isLightboxOpen) closeLightbox();
+        else closeGalleryAdmin();
+      }
+      if (!isLightboxOpen) return;
+      if (event.key === "ArrowRight") nextLightbox();
+      if (event.key === "ArrowLeft") prevLightbox();
     });
 
-    fillEvent();
-    renderAccess();
-    renderPreviews();
-
-    if (sessionStorage.getItem(SESSION_KEY) === "true") {
-      unlockGallery();
-    }
+    window.addEventListener("load", () => loadGallery(false));
   </script>
 </body>
 </html>
